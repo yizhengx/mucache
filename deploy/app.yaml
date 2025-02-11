@@ -88,4 +88,4 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - node-${NODE_IDX}
+                      - worker${NODE_IDX}

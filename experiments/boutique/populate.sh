@@ -1,3 +1,5 @@
+source ~/mucache/scripts/utility.sh
+
 python3 experiments/boutique/populate.py \
     --users 10000 \
     --products 10000 \
