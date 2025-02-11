@@ -5,18 +5,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	dapr "github.com/dapr/go-sdk/client"
-	"github.com/eniac/mucache/pkg/cm"
-	"github.com/eniac/mucache/pkg/common"
-	"github.com/eniac/mucache/pkg/utility"
-	"github.com/eniac/mucache/pkg/wrappers"
-	"github.com/golang/glog"
 	"io"
 	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	dapr "github.com/dapr/go-sdk/client"
+	"github.com/eniac/mucache/pkg/cm"
+	"github.com/eniac/mucache/pkg/common"
+	"github.com/eniac/mucache/pkg/utility"
+	"github.com/eniac/mucache/pkg/wrappers"
+	"github.com/golang/glog"
 )
 
 var daprPort = os.Getenv("DAPR_HTTP_PORT")
@@ -220,6 +221,22 @@ func Invoke[T interface{}](ctx context.Context, app string, method string, input
 	if common.CMEnabled {
 		req.Header.Set("caller", common.MyName)
 		req.Header.Set("method", method)
+	}
+	performRequest[T](ctx, req, &res, app, method, buf)
+	return res
+}
+
+func SlowpokeInvoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {
+	buf, err := json.Marshal(input)
+	if err != nil {
+		panic(err)
+	}
+	var res T
+	// Use kubernete native DNS addr
+	url := fmt.Sprintf("http://%s.%s.svc.cluster.local:%s/%s", app, "default", 3000, method)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(buf))
+	if err != nil {
+		panic(err)
 	}
 	performRequest[T](ctx, req, &res, app, method, buf)
 	return res
