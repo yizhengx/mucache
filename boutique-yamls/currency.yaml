@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: "${APP_NAME_NO_UNDERSCORES}"
+  name: "currency"
   labels:
-    app: "${APP_NAME_NO_UNDERSCORES}"
+    app: "currency"
 spec:
   selector:
-    app: "${APP_NAME_NO_UNDERSCORES}"
+    app: "currency"
   ports:
     - protocol: TCP
       port: 80
@@ -26,37 +26,37 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "${APP_NAME_NO_UNDERSCORES}"
+  name: "currency"
   labels:
-    app: "${APP_NAME_NO_UNDERSCORES}"
+    app: "currency"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "${APP_NAME_NO_UNDERSCORES}"
+      app: "currency"
   template:
     metadata:
       labels:
-        app: "${APP_NAME_NO_UNDERSCORES}"
+        app: "currency"
     spec:
       containers:
-        - name: "${APP_NAME_NO_UNDERSCORES}"
-          image: ${docker_io_username}/mucache:latest
+        - name: "currency"
+          image: yizhengx/mucache:latest
           env:
             - name: APP_PORT
               value: "3000"
             - name: APP_NAME
-              value: "${APP_NAME}"
+              value: "currency"
             - name: APP_NAME_NO_UNDERSCORES
-              value: "${APP_NAME_NO_UNDERSCORES}"
+              value: "currency"
             - name: APP_NAMESPACE
-              value: "${APP_NAMESPACE}"
+              value: "boutique"
             - name: NODE_IDX
-              value: "${NODE_IDX}"
+              value: "3"
             - name: CM_ENABLED
-              value: "${CM_ENABLED}"
+              value: "false"
             - name: EXPIRATION_TTL
-              value: "${EXPIRATION_TTL}"
+              value: "0"
           ports:
             - containerPort: 3000
             - containerPort: 5550
@@ -70,4 +70,4 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - worker${NODE_IDX}
+                      - worker3

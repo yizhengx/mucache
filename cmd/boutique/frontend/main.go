@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/eniac/mucache/internal/boutique"
-	"github.com/eniac/mucache/pkg/cm"
+	// "github.com/eniac/mucache/pkg/cm"
 	"github.com/eniac/mucache/pkg/wrappers"
 	"net/http"
 	"runtime"
@@ -58,6 +58,7 @@ func main() {
 	//http.HandleFunc("/add_to_cart", wrappers.NonROWrapper[boutique.AddToCartRequest, boutique.AddToCartResponse](addToCart))
 	http.HandleFunc("/ro_view_cart", wrappers.ROWrapper[boutique.ViewCartRequest, boutique.ViewCartResponse](viewCart))
 	http.HandleFunc("/checkout", wrappers.ROWrapper[boutique.CheckoutRequest, boutique.CheckoutResponse](checkout))
+	fmt.Println("Server started on :3000")
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
 		panic(err)

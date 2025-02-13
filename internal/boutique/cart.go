@@ -6,6 +6,10 @@ import (
 	"github.com/eniac/mucache/pkg/state"
 )
 
+const (
+	debug_cart = true
+)
+
 func remove(slice []int, s int) []int {
 	return append(slice[:s], slice[s+1:]...)
 }
@@ -37,6 +41,7 @@ func AddItem(ctx context.Context, userId string, productId string, quantity int3
 }
 
 func GetCart(ctx context.Context, userId string) Cart {
+	if debug_cart { fmt.Println("GetCart: ", userId) }
 	cart, err := state.GetState[Cart](ctx, userId)
 	if err != nil {
 		cart = Cart{

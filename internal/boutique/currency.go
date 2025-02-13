@@ -9,6 +9,10 @@ import (
 	"strings"
 )
 
+const (
+	debug_currency = true
+)
+
 func _carry(units float64, nanos float64) carry {
 	fractionSize := math.Pow(10, 9)
 	nanos += fractionSize
@@ -73,6 +77,7 @@ func ConvertCurrency(ctx context.Context, amount Money, toCurrency string) Money
 }
 
 func GetSupportedCurrencies(ctx context.Context) []Currency {
+	if debug_currency { fmt.Println("GetSupportedCurrencies ") }
 	keys, err := state.GetState[[]string](ctx, "CURRENCIES")
 	if err != nil {
 		panic(err)

@@ -3,9 +3,15 @@ package boutique
 import (
 	"context"
 	"github.com/eniac/mucache/pkg/invoke"
+	"fmt"
+)
+
+const (
+	debug_frontend = true
 )
 
 func Home(ctx context.Context, request HomeRequest) HomeResponse {
+	if (debug_frontend) { fmt.Println("Home: ", request) }
 	req1 := GetSupportedCurrenciesRequest{}
 	currenciesRes := invoke.SlowpokeInvoke[GetSupportedCurrenciesResponse](ctx, "currency", "ro_get_currencies", req1)
 	//http.HandleFunc("/ro_get_currencies", wrappers.ROWrapper[boutique.GetSupportedCurrenciesRequest, boutique.GetSupportedCurrenciesResponse](getCurrencies))
@@ -27,17 +33,20 @@ func Home(ctx context.Context, request HomeRequest) HomeResponse {
 }
 
 func FrontendSetCurrency(ctx context.Context, currency Currency) {
+	if (debug_frontend) { fmt.Println("FrontendSetCurrency: ", currency) }
 	req := SetCurrencySupportRequest{Currency: currency}
 	invoke.SlowpokeInvoke[SetCurrencySupportResponse](ctx, "currency", "set_currency", req)
 }
 
 func BrowseProduct(ctx context.Context, productId string) BrowseProductResponse {
+	if (debug_frontend) { fmt.Println("BrowseProduct: ", productId) }
 	req := GetProductRequest{ProductId: productId}
 	res := invoke.SlowpokeInvoke[GetProductResponse](ctx, "productcatalog", "ro_get_product", req)
 	return BrowseProductResponse{res.Product}
 }
 
 func AddToCart(ctx context.Context, request AddToCartRequest) AddToCartResponse {
+	if (debug_frontend) { fmt.Println("AddToCart: ", request) }
 	req := AddItemRequest{
 		UserId:    request.UserId,
 		ProductId: request.ProductId,
@@ -49,6 +58,7 @@ func AddToCart(ctx context.Context, request AddToCartRequest) AddToCartResponse 
 }
 
 func ViewCart(ctx context.Context, request ViewCartRequest) ViewCartResponse {
+	if (debug_frontend) { fmt.Println("ViewCart: ", request) }
 	req := GetCartRequest{
 		UserId: request.UserId,
 	}
@@ -58,6 +68,7 @@ func ViewCart(ctx context.Context, request ViewCartRequest) ViewCartResponse {
 }
 
 func Checkout(ctx context.Context, request CheckoutRequest) CheckoutResponse {
+	if (debug_frontend) { fmt.Println("Checkout: ", request) }
 	req := PlaceOrderRequest{
 		UserId:       request.UserId,
 		UserCurrency: request.UserCurrency,

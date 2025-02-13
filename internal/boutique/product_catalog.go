@@ -4,6 +4,11 @@ import (
 	"context"
 	"github.com/eniac/mucache/pkg/state"
 	"strings"
+	"fmt"
+)
+
+const (
+	debug_product_catalog = true
 )
 
 var CatalogSize = 1000
@@ -11,7 +16,7 @@ var CatalogSize = 1000
 func AddProduct(ctx context.Context, product Product) string {
 	keys, err := state.GetState[[]string](ctx, "KEYS")
 	if err != nil {
-		// fmt.Println("empty db")
+		// fmt.fmt.Println("empty db")
 	}
 	keys = append(keys, product.Id)
 	state.SetState(ctx, "KEYS", keys)
@@ -22,7 +27,7 @@ func AddProduct(ctx context.Context, product Product) string {
 func AddProducts(ctx context.Context, products []Product) {
 	keys, err := state.GetState[[]string](ctx, "KEYS")
 	if err != nil {
-		// fmt.Println("empty db")
+		// fmt.fmt.Println("empty db")
 	}
 	// If keys are 100 then we don't want to add more to the catalog
 	if len(keys) < CatalogSize {
@@ -45,6 +50,7 @@ func AddProducts(ctx context.Context, products []Product) {
 }
 
 func GetProduct(ctx context.Context, Id string) Product {
+	if debug_product_catalog { fmt.Println("GetProduct: ", Id) }
 	product, err := state.GetState[Product](ctx, Id)
 	if err != nil {
 		panic(err)
@@ -53,6 +59,7 @@ func GetProduct(ctx context.Context, Id string) Product {
 }
 
 func SearchProducts(ctx context.Context, name string) []Product {
+	if debug_product_catalog { fmt.Println("SearchProducts: ", name) }
 	products := make([]Product, 0)
 	keys, err := state.GetState[[]string](ctx, "KEYS")
 	if err != nil {
@@ -72,6 +79,7 @@ func SearchProducts(ctx context.Context, name string) []Product {
 }
 
 func FetchCatalog(ctx context.Context, catalogSize int) []Product {
+	if debug_product_catalog { fmt.Println("FetchCatalog: ", catalogSize) }
 	keys, err := state.GetState[[]string](ctx, "KEYS")
 	if err != nil {
 		panic(err)

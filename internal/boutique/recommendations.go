@@ -4,6 +4,11 @@ import (
 	"context"
 	"github.com/eniac/mucache/pkg/invoke"
 	"math/rand"
+	"fmt"
+)
+
+const (
+	debug_recommendations = true
 )
 
 func min(a int, b int) int {
@@ -23,9 +28,10 @@ func contains(s []string, e string) bool {
 }
 
 func GetRecommendations(ctx context.Context, productIds []string) []string {
+	if debug_recommendations { fmt.Println("GetRecommendations: ", productIds) }
 	_productIds := make([]string, 0)
 	req1 := FetchCatalogRequest{}
-	catalog := invoke.Invoke[FetchCatalogResponse](ctx, "productcatalog", "ro_fetch_catalog", req1)
+	catalog := invoke.SlowpokeInvoke[FetchCatalogResponse](ctx, "productcatalog", "ro_fetch_catalog", req1)
 	for _, x := range catalog.Catalog {
 		_productIds = append(_productIds, x.Id)
 	}
