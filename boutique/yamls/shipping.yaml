@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
         - name: "shipping"
-          image: yizhengx/mucache:latest
+          image: yizhengx/mucache:prebuilt
           env:
             - name: APP_PORT
               value: "3000"
