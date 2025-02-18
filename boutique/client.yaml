@@ -18,13 +18,14 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
+      nodeName: worker1
       containers:
       - name: hr-client
         image: ubuntu
         resources:
           requests:
             cpu: 4
-            memory: 2Gi
+            memory: 4Gi
         command:  ["/bin/sh", "-c"]
         args:
           - apt-get -y update &&
@@ -39,8 +40,8 @@ spec:
             cd wrk &&
             git checkout mucache &&
             make &&
+            echo "Init completed" &&
             sleep 365d
         imagePullPolicy: Always
-        # restartPolicy: Always
       imagePullSecrets:
         - name: regcred
