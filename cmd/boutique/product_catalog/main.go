@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/eniac/mucache/internal/boutique"
-	"github.com/eniac/mucache/pkg/cm"
+	// "github.com/eniac/mucache/pkg/cm"
 	"github.com/eniac/mucache/pkg/wrappers"
+	"github.com/eniac/mucache/pkg/slowpoke"
 	"net/http"
 	"runtime"
+	"os"
+	"github.com/goccy/go-json"
 )
 
 func heartbeat(w http.ResponseWriter, r *http.Request) {
@@ -18,12 +21,14 @@ func heartbeat(w http.ResponseWriter, r *http.Request) {
 }
 
 func addProduct(ctx context.Context, req *boutique.AddProductRequest) *boutique.AddProductResponse {
+	slowpoke.SlowpokeCheck("addProduct")
 	productId := boutique.AddProduct(ctx, req.Product)
 	resp := boutique.AddProductResponse{ProductId: productId}
 	return &resp
 }
 
 func getProduct(ctx context.Context, req *boutique.GetProductRequest) *boutique.GetProductResponse {
+	slowpoke.SlowpokeCheck("getProduct")
 	product := boutique.GetProduct(ctx, req.ProductId)
 	//fmt.Printf("Product read: %+v\n", product)
 	resp := boutique.GetProductResponse{Product: product}
@@ -31,6 +36,7 @@ func getProduct(ctx context.Context, req *boutique.GetProductRequest) *boutique.
 }
 
 func searchProducts(ctx context.Context, req *boutique.SearchProductsRequest) *boutique.SearchProductsResponse {
+	slowpoke.SlowpokeCheck("searchProducts")
 	products := boutique.SearchProducts(ctx, req.Query)
 	//fmt.Printf("Products read: %+v\n", products)
 	resp := boutique.SearchProductsResponse{Products: products}
@@ -38,26 +44,51 @@ func searchProducts(ctx context.Context, req *boutique.SearchProductsRequest) *b
 }
 
 func fetchCatalog(ctx context.Context, req *boutique.FetchCatalogRequest) *boutique.FetchCatalogResponse {
+	slowpoke.SlowpokeCheck("fetchCatalog")
 	products := boutique.FetchCatalog(ctx, req.CatalogSize)
 	resp := boutique.FetchCatalogResponse{Catalog: products}
 	return &resp
 }
 
 func addProducts(ctx context.Context, req *boutique.AddProductsRequest) *boutique.AddProductsResponse {
+	slowpoke.SlowpokeCheck("addProducts")
 	boutique.AddProducts(ctx, req.Products)
 	resp := boutique.AddProductsResponse{OK: "OK"}
 	return &resp
 }
 
+func loadProducts(ctx context.Context) []boutique.Product {
+
+	// List directory
+	var products []boutique.Product
+	catalogJSON, err := os.ReadFile("/app/cmd/boutique/products.json")
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(catalogJSON, &products)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Loaded products: ", len(products))
+	// for _, product := range products {
+	// 	fmt.Println(product)
+	// }
+	return products
+}
+
 func main() {
 	fmt.Println(runtime.GOMAXPROCS(8))
-	go cm.ZmqProxy()
+	// go cm.ZmqProxy()
 	http.HandleFunc("/heartbeat", heartbeat)
 	http.HandleFunc("/add_product", wrappers.NonROWrapper[boutique.AddProductRequest, boutique.AddProductResponse](addProduct))
 	http.HandleFunc("/add_products", wrappers.NonROWrapper[boutique.AddProductsRequest, boutique.AddProductsResponse](addProducts))
 	http.HandleFunc("/ro_get_product", wrappers.ROWrapper[boutique.GetProductRequest, boutique.GetProductResponse](getProduct))
 	http.HandleFunc("/ro_search_products", wrappers.ROWrapper[boutique.SearchProductsRequest, boutique.SearchProductsResponse](searchProducts))
 	http.HandleFunc("/ro_fetch_catalog", wrappers.ROWrapper[boutique.FetchCatalogRequest, boutique.FetchCatalogResponse](fetchCatalog))
+	boutique.InitAllProducts(context.Background(), loadProducts(context.Background()))
+	slowpoke.SlowpokeInit()
+	// boutique.GetAllProducts(context.Background())
+	fmt.Println("Server started on port 3000")
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
 		panic(err)

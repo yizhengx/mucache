@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/eniac/mucache/internal/boutique"
 	// "github.com/eniac/mucache/pkg/cm"
+	"github.com/eniac/mucache/pkg/slowpoke"
 	"github.com/eniac/mucache/pkg/wrappers"
 	"net/http"
 	"runtime"
@@ -18,6 +19,7 @@ func heartbeat(w http.ResponseWriter, r *http.Request) {
 }
 
 func home(ctx context.Context, req *boutique.HomeRequest) *boutique.HomeResponse {
+	slowpoke.SlowpokeCheck("home")
 	resp := boutique.Home(ctx, *req)
 	return &resp
 }
@@ -29,21 +31,25 @@ func home(ctx context.Context, req *boutique.HomeRequest) *boutique.HomeResponse
 //}
 
 func browseProduct(ctx context.Context, req *boutique.BrowseProductRequest) *boutique.BrowseProductResponse {
+	slowpoke.SlowpokeCheck("browseProduct")
 	resp := boutique.BrowseProduct(ctx, req.ProductId)
 	return &resp
 }
 
 func addToCart(ctx context.Context, request *boutique.AddToCartRequest) *boutique.AddToCartResponse {
+	slowpoke.SlowpokeCheck("addToCart")
 	resp := boutique.AddToCart(ctx, *request)
 	return &resp
 }
 
 func viewCart(ctx context.Context, request *boutique.ViewCartRequest) *boutique.ViewCartResponse {
+	slowpoke.SlowpokeCheck("viewCart")
 	resp := boutique.ViewCart(ctx, *request)
 	return &resp
 }
 
 func checkout(ctx context.Context, request *boutique.CheckoutRequest) *boutique.CheckoutResponse {
+	slowpoke.SlowpokeCheck("checkout")
 	resp := boutique.Checkout(ctx, *request)
 	return &resp
 }
@@ -58,6 +64,7 @@ func main() {
 	//http.HandleFunc("/add_to_cart", wrappers.NonROWrapper[boutique.AddToCartRequest, boutique.AddToCartResponse](addToCart))
 	http.HandleFunc("/ro_view_cart", wrappers.ROWrapper[boutique.ViewCartRequest, boutique.ViewCartResponse](viewCart))
 	http.HandleFunc("/checkout", wrappers.ROWrapper[boutique.CheckoutRequest, boutique.CheckoutResponse](checkout))
+	slowpoke.SlowpokeInit()
 	fmt.Println("Server started on :3000")
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {

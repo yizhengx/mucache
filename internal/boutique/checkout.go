@@ -2,8 +2,9 @@ package boutique
 
 import (
 	"context"
-	"github.com/eniac/mucache/pkg/invoke"
+	// "github.com/eniac/mucache/pkg/invoke"
 	"github.com/google/uuid"
+	"github.com/eniac/mucache/pkg/slowpoke"
 )
 
 const (
@@ -90,9 +91,9 @@ func prepOrderItems(ctx context.Context, items []CartItem, userCurrency string) 
 	out := make([]OrderItem, len(items))
 	for i, item := range items {
 		req1 := GetProductRequest{ProductId: item.ProductId}
-		product := invoke.SlowpokeInvoke[GetProductResponse](ctx, "productcatalog", "ro_get_product", req1)
+		product := slowpoke.Invoke[GetProductResponse](ctx, "productcatalog", "ro_get_product", req1)
 		req2 := ConvertCurrencyRequest{Amount: *product.Product.PriceUsd, ToCurrency: userCurrency}
-		price := invoke.SlowpokeInvoke[ConvertCurrencyResponse](ctx, "currency", "ro_convert_currency", req2)
+		price := slowpoke.Invoke[ConvertCurrencyResponse](ctx, "currency", "ro_convert_currency", req2)
 		out[i] = OrderItem{
 			Item: &item,
 			Cost: &price.Amount}
@@ -114,31 +115,31 @@ func prepareOrderItemsAndShippingQuoteFromCart(ctx context.Context, userID, user
 
 func quoteShipping(ctx context.Context, address Address, items []CartItem) Money {
 	req1 := GetQuoteRequest{Items: items}
-	shippingQuote := invoke.SlowpokeInvoke[GetQuoteResponse](ctx, "shipping", "ro_get_quote", req1)
+	shippingQuote := slowpoke.Invoke[GetQuoteResponse](ctx, "shipping", "ro_get_quote", req1)
 	return shippingQuote.CostUsd
 }
 
 func getUserCart(ctx context.Context, userID string) Cart {
 	req1 := GetCartRequest{UserId: userID}
-	cart := invoke.SlowpokeInvoke[GetCartResponse](ctx, "cart", "ro_get_cart", req1)
+	cart := slowpoke.Invoke[GetCartResponse](ctx, "cart", "ro_get_cart", req1)
 	return cart.Cart
 }
 
 func emptyUserCart(ctx context.Context, userID string) bool {
 	req1 := EmptyCartRequest{UserId: userID}
-	res := invoke.SlowpokeInvoke[EmptyCartResponse](ctx, "cart", "empty_cart", req1)
+	res := slowpoke.Invoke[EmptyCartResponse](ctx, "cart", "empty_cart", req1)
 	return res.Ok
 }
 
 func convertCurrency(ctx context.Context, from Money, toCurrency string) Money {
 	req1 := ConvertCurrencyRequest{Amount: from, ToCurrency: toCurrency}
-	result := invoke.SlowpokeInvoke[ConvertCurrencyResponse](ctx, "currency", "ro_convert_currency", req1)
+	result := slowpoke.Invoke[ConvertCurrencyResponse](ctx, "currency", "ro_convert_currency", req1)
 	return result.Amount
 }
 
 func chargeCard(ctx context.Context, amount Money, paymentInfo CreditCard) string {
 	req1 := ChargeRequest{Amount: amount, CreditCard: paymentInfo}
-	paymentResp := invoke.SlowpokeInvoke[ChargeResponse](ctx, "payment", "charge", req1)
+	paymentResp := slowpoke.Invoke[ChargeResponse](ctx, "payment", "charge", req1)
 	if paymentResp.Error != "" {
 		panic(paymentResp.Error)
 	}
@@ -150,12 +151,12 @@ func sendOrderConfirmation(ctx context.Context, email string, order OrderResult)
 		Email: email,
 		Order: order,
 	}
-	resp := invoke.SlowpokeInvoke[SendOrderConfirmationResponse](ctx, "email", "ro_send_email", req1)
+	resp := slowpoke.Invoke[SendOrderConfirmationResponse](ctx, "email", "ro_send_email", req1)
 	return resp.Ok
 }
 
 func shipOrder(ctx context.Context, address Address, items []CartItem) string {
 	req1 := ShipOrderRequest{Address: address, Items: items}
-	resp := invoke.SlowpokeInvoke[ShipOrderResponse](ctx, "shipping", "ship_order", req1)
+	resp := slowpoke.Invoke[ShipOrderResponse](ctx, "shipping", "ship_order", req1)
 	return resp.TrackingId
 }

@@ -233,11 +233,12 @@ func SlowpokeInvoke[T interface{}](ctx context.Context, app string, method strin
 	}
 	var res T
 	// Use kubernete native DNS addr
-	url := fmt.Sprintf("http://%s.%s.svc.cluster.local:%s/%s", app, "default", "3000", method)
+	url := fmt.Sprintf("http://%s.%s.svc.cluster.local:%s/%s", app, "default", "80", method)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(buf))
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("SlowpokeInvoke: %+v\n", req)
 	performRequest[T](ctx, req, &res, app, method, buf)
 	return res
 }

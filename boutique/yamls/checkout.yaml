@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: "shipping"
+  name: "checkout"
   labels:
-    app: "shipping"
+    app: "checkout"
 spec:
   selector:
-    app: "shipping"
+    app: "checkout"
   ports:
     - protocol: TCP
       port: 80
@@ -26,42 +26,51 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "shipping"
+  name: "checkout"
   labels:
-    app: "shipping"
+    app: "checkout"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "shipping"
+      app: "checkout"
   template:
     metadata:
       labels:
-        app: "shipping"
+        app: "checkout"
     spec:
       containers:
-        - name: "shipping"
+        - name: "checkout"
           image: yizhengx/mucache:latest
           env:
             - name: APP_PORT
               value: "3000"
             - name: APP_NAME
-              value: "shipping"
+              value: "checkout"
             - name: APP_NAME_NO_UNDERSCORES
-              value: "shipping"
+              value: "checkout"
             - name: APP_NAMESPACE
               value: "boutique"
             - name: NODE_IDX
-              value: "3"
+              value: "2"
             - name: CM_ENABLED
               value: "false"
             - name: EXPIRATION_TTL
               value: "0"
+            - name: SLOWPOKE_DELAY_MICROS
+              value: "${SLOWPOKE_DELAY_MICROS_CHECKOUT}"
           ports:
             - containerPort: 3000
             - containerPort: 5550
             - containerPort: 5551
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 4Gi
+            limits:
+              cpu: 1000m
+              memory: 4Gi
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -70,4 +79,4 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - worker3
+                      - worker2

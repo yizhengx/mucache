@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: "recommendations"
+  name: "email"
   labels:
-    app: "recommendations"
+    app: "email"
 spec:
   selector:
-    app: "recommendations"
+    app: "email"
   ports:
     - protocol: TCP
       port: 80
@@ -26,42 +26,51 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "recommendations"
+  name: "email"
   labels:
-    app: "recommendations"
+    app: "email"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "recommendations"
+      app: "email"
   template:
     metadata:
       labels:
-        app: "recommendations"
+        app: "email"
     spec:
       containers:
-        - name: "recommendations"
+        - name: "email"
           image: yizhengx/mucache:latest
           env:
             - name: APP_PORT
               value: "3000"
             - name: APP_NAME
-              value: "recommendations"
+              value: "email"
             - name: APP_NAME_NO_UNDERSCORES
-              value: "recommendations"
+              value: "email"
             - name: APP_NAMESPACE
               value: "boutique"
             - name: NODE_IDX
-              value: "2"
+              value: "1"
             - name: CM_ENABLED
               value: "false"
             - name: EXPIRATION_TTL
               value: "0"
+            - name: SLOWPOKE_DELAY_MICROS
+              value: "${SLOWPOKE_DELAY_MICROS_EMAIL}"
           ports:
             - containerPort: 3000
             - containerPort: 5550
             - containerPort: 5551
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 4Gi
+            limits:
+              cpu: 1000m
+              memory: 4Gi
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -70,4 +79,4 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - worker2
+                      - worker1

@@ -8,10 +8,23 @@ import (
 )
 
 const (
-	debug_product_catalog = true
+	debug_product_catalog = false
 )
 
+var allProducts []Product
+
 var CatalogSize = 1000
+
+func InitAllProducts(ctx context.Context, products []Product) {
+	allProducts = products
+	fmt.Println("InitAllProducts: ", len(allProducts))
+}
+
+func GetAllProducts(ctx context.Context) {
+	for _, product := range allProducts {
+		fmt.Println(product)
+	}
+}
 
 func AddProduct(ctx context.Context, product Product) string {
 	keys, err := state.GetState[[]string](ctx, "KEYS")
@@ -51,9 +64,18 @@ func AddProducts(ctx context.Context, products []Product) {
 
 func GetProduct(ctx context.Context, Id string) Product {
 	if debug_product_catalog { fmt.Println("GetProduct: ", Id) }
-	product, err := state.GetState[Product](ctx, Id)
-	if err != nil {
-		panic(err)
+	// product, err := state.GetState[Product](ctx, Id)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// return product
+
+	var product Product
+	for _, p := range allProducts {
+		if p.Id == Id {
+			product = p
+			break
+		}
 	}
 	return product
 }
@@ -80,29 +102,30 @@ func SearchProducts(ctx context.Context, name string) []Product {
 
 func FetchCatalog(ctx context.Context, catalogSize int) []Product {
 	if debug_product_catalog { fmt.Println("FetchCatalog: ", catalogSize) }
-	keys, err := state.GetState[[]string](ctx, "KEYS")
-	if err != nil {
-		panic(err)
-	}
+	return allProducts
+// 	keys, err := state.GetState[[]string](ctx, "KEYS")
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	// Limit fetches to the catalog size
-	if catalogSize < len(keys) {
-		keys = keys[:catalogSize]
-	}
-	// Bulk
-	var products []Product
-	if len(keys) > 0 {
-		products = state.GetBulkStateDefault[Product](ctx, keys, Product{})
-	} else {
-		products = make([]Product, len(keys))
-	}
-	// Prior non-bulk implementation
-	//for _, id := range keys {
-	//	product, err := state.GetState[Product](ctx, id)
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	products = append(products, product)
-	//}
-	return products
+// 	// Limit fetches to the catalog size
+// 	if catalogSize < len(keys) {
+// 		keys = keys[:catalogSize]
+// 	}
+// 	// Bulk
+// 	var products []Product
+// 	if len(keys) > 0 {
+// 		products = state.GetBulkStateDefault[Product](ctx, keys, Product{})
+// 	} else {
+// 		products = make([]Product, len(keys))
+// 	}
+// 	// Prior non-bulk implementation
+// 	//for _, id := range keys {
+// 	//	product, err := state.GetState[Product](ctx, id)
+// 	//	if err != nil {
+// 	//		panic(err)
+// 	//	}
+// 	//	products = append(products, product)
+// 	//}
+// 	return products
 }

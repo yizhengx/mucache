@@ -9,4 +9,4 @@ tag="${docker_io_username}/shardmucache"
 docker build \
   -f "${MUCACHE_TOP}/deploy/shard/Dockerfile" \
   -t "${tag}" .
-docker push "${tag}"
+# docker push "${tag}"

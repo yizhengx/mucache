@@ -2,13 +2,14 @@ package boutique
 
 import (
 	"context"
-	"github.com/eniac/mucache/pkg/invoke"
+	// "github.com/eniac/mucache/pkg/invoke"
+	"github.com/eniac/mucache/pkg/slowpoke"
 	"math/rand"
 	"fmt"
 )
 
 const (
-	debug_recommendations = true
+	debug_recommendations = false
 )
 
 func min(a int, b int) int {
@@ -31,7 +32,7 @@ func GetRecommendations(ctx context.Context, productIds []string) []string {
 	if debug_recommendations { fmt.Println("GetRecommendations: ", productIds) }
 	_productIds := make([]string, 0)
 	req1 := FetchCatalogRequest{}
-	catalog := invoke.SlowpokeInvoke[FetchCatalogResponse](ctx, "productcatalog", "ro_fetch_catalog", req1)
+	catalog := slowpoke.Invoke[FetchCatalogResponse](ctx, "productcatalog", "ro_fetch_catalog", req1)
 	for _, x := range catalog.Catalog {
 		_productIds = append(_productIds, x.Id)
 	}

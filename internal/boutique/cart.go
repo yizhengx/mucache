@@ -2,16 +2,68 @@ package boutique
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/eniac/mucache/pkg/state"
+	"github.com/redis/go-redis/v9"
+	"github.com/goccy/go-json"
 )
 
 const (
-	debug_cart = true
+	debug_cart = false
 )
+
+var local_carts map[string]Cart
 
 func remove(slice []int, s int) []int {
 	return append(slice[:s], slice[s+1:]...)
+}
+
+func CartInit() {
+	// _redisPing(context.Background())
+	local_carts = make(map[string]Cart)
+}
+
+func _redisPing(ctx context.Context) {
+	client := redis.NewClient(&redis.Options{
+		Addr: "redis-cart:6379",
+		DB:   0,
+	})
+	pong, err := client.Ping(ctx).Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(pong)
+}
+
+func _redisGetCart(ctx context.Context, key string) (Cart, error) {
+	client := redis.NewClient(&redis.Options{
+		Addr: "redis-cart:6379",
+		DB:   0,
+	})
+	val, err := client.Get(ctx, key).Result()
+	if err != redis.Nil {
+		fmt.Println("redis error: ", err)
+		panic(err)
+	}
+	var cart Cart
+	if len(val) == 0 {
+		// fmt.Printf("cart not found: %v\n", key)
+		return cart, errors.New("cart not found")
+	}
+	err = json.Unmarshal([]byte(val), &cart)
+	if err != nil {
+		fmt.Println("json error: ", err)
+		panic(err)
+	}
+	return cart, nil
+}
+
+func _localGetCart(ctx context.Context, key string) (Cart, error) {
+	if cart, ok := local_carts[key]; ok {
+		return cart, nil
+	}
+	return Cart{}, errors.New("cart not found")
 }
 
 func getCartDefault(ctx context.Context, userId string) Cart {
@@ -28,6 +80,7 @@ func getCartDefault(ctx context.Context, userId string) Cart {
 }
 
 func AddItem(ctx context.Context, userId string, productId string, quantity int32) bool {
+	if debug_cart { fmt.Println("AddItem: ", userId, productId, quantity) }
 	item := CartItem{
 		ProductId: productId,
 		Quantity:  quantity,
@@ -42,7 +95,9 @@ func AddItem(ctx context.Context, userId string, productId string, quantity int3
 
 func GetCart(ctx context.Context, userId string) Cart {
 	if debug_cart { fmt.Println("GetCart: ", userId) }
-	cart, err := state.GetState[Cart](ctx, userId)
+	// cart, err := state.GetState[Cart](ctx, userId)
+	// cart, err := _redisGetCart(ctx, userId)
+	cart, err := _localGetCart(ctx, userId)
 	if err != nil {
 		cart = Cart{
 			UserId: userId,

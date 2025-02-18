@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/eniac/mucache/internal/boutique"
-	"github.com/eniac/mucache/pkg/cm"
+	// "github.com/eniac/mucache/pkg/cm"
+	"github.com/eniac/mucache/pkg/slowpoke"
 	"github.com/eniac/mucache/pkg/wrappers"
 	"net/http"
 	"runtime"
@@ -18,6 +19,7 @@ func heartbeat(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRecommendations(ctx context.Context, req *boutique.GetRecommendationsRequest) *boutique.GetRecommendationsResponse {
+	slowpoke.SlowpokeCheck("getRecommendations")
 	products := boutique.GetRecommendations(ctx, req.ProductIds)
 	resp := boutique.GetRecommendationsResponse{ProductIds: products}
 	return &resp
@@ -25,9 +27,11 @@ func getRecommendations(ctx context.Context, req *boutique.GetRecommendationsReq
 
 func main() {
 	fmt.Println(runtime.GOMAXPROCS(8))
-	go cm.ZmqProxy()
+	// go cm.ZmqProxy()
 	http.HandleFunc("/heartbeat", heartbeat)
 	http.HandleFunc("/ro_get_recommendations", wrappers.ROWrapper[boutique.GetRecommendationsRequest, boutique.GetRecommendationsResponse](getRecommendations))
+	slowpoke.SlowpokeInit()
+	fmt.Println("Server started on port 3000")
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
 		panic(err)

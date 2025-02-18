@@ -10,8 +10,15 @@ import (
 )
 
 const (
-	debug_currency = true
+	debug_currency = false
 )
+
+var allCurrencies []Currency
+
+func InitAllCurrencies(ctx context.Context, currencies []Currency) {
+	allCurrencies = currencies
+	fmt.Println("InitAllCurrencies: ", len(allCurrencies))
+}
 
 func _carry(units float64, nanos float64) carry {
 	fractionSize := math.Pow(10, 9)
@@ -78,24 +85,20 @@ func ConvertCurrency(ctx context.Context, amount Money, toCurrency string) Money
 
 func GetSupportedCurrencies(ctx context.Context) []Currency {
 	if debug_currency { fmt.Println("GetSupportedCurrencies ") }
-	keys, err := state.GetState[[]string](ctx, "CURRENCIES")
-	if err != nil {
-		panic(err)
-	}
 
-	// Bulk
-	var currencies []Currency
-	if len(keys) > 0 {
-		currencies = state.GetBulkStateDefault[Currency](ctx, keys, Currency{})
-	} else {
-		currencies = make([]Currency, len(keys))
-	}
-	//for _, currencyCode := range keys {
-	//	currency, err := state.GetState[Currency](ctx, currencyCode)
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	currencies = append(currencies, currency)
-	//}
-	return currencies
+	return allCurrencies
+
+	// keys, err := state.GetState[[]string](ctx, "CURRENCIES")
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// // Bulk
+	// var currencies []Currency
+	// if len(keys) > 0 {
+	// 	currencies = state.GetBulkStateDefault[Currency](ctx, keys, Currency{})
+	// } else {
+	// 	currencies = make([]Currency, len(keys))
+	// }
+	// return currencies
 }

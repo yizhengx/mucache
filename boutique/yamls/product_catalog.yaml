@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: "email"
+  name: "productcatalog"
   labels:
-    app: "email"
+    app: "productcatalog"
 spec:
   selector:
-    app: "email"
+    app: "productcatalog"
   ports:
     - protocol: TCP
       port: 80
@@ -26,29 +26,29 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "email"
+  name: "productcatalog"
   labels:
-    app: "email"
+    app: "productcatalog"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "email"
+      app: "productcatalog"
   template:
     metadata:
       labels:
-        app: "email"
+        app: "productcatalog"
     spec:
       containers:
-        - name: "email"
+        - name: "productcatalog"
           image: yizhengx/mucache:latest
           env:
             - name: APP_PORT
               value: "3000"
             - name: APP_NAME
-              value: "email"
+              value: "product_catalog"
             - name: APP_NAME_NO_UNDERSCORES
-              value: "email"
+              value: "productcatalog"
             - name: APP_NAMESPACE
               value: "boutique"
             - name: NODE_IDX
@@ -57,11 +57,20 @@ spec:
               value: "false"
             - name: EXPIRATION_TTL
               value: "0"
+            - name: SLOWPOKE_DELAY_MICROS
+              value: "${SLOWPOKE_DELAY_MICROS_PRODUCT_CATALOG}"
           ports:
             - containerPort: 3000
             - containerPort: 5550
             - containerPort: 5551
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 4Gi
+            limits:
+              cpu: 1000m
+              memory: 4Gi
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

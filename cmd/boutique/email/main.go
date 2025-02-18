@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/eniac/mucache/internal/boutique"
-	"github.com/eniac/mucache/pkg/cm"
+	// "github.com/eniac/mucache/pkg/cm"
+	"github.com/eniac/mucache/pkg/slowpoke"
 	"github.com/eniac/mucache/pkg/wrappers"
 	"net/http"
 	"runtime"
@@ -18,6 +19,7 @@ func heartbeat(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendEmail(ctx context.Context, req *boutique.SendOrderConfirmationRequest) *boutique.SendOrderConfirmationResponse {
+	slowpoke.SlowpokeCheck("sendEmail")
 	ok := boutique.SendConfirmation(ctx, req.Email, req.Order)
 	resp := boutique.SendOrderConfirmationResponse{Ok: ok}
 	return &resp
@@ -25,9 +27,11 @@ func sendEmail(ctx context.Context, req *boutique.SendOrderConfirmationRequest) 
 
 func main() {
 	fmt.Println(runtime.GOMAXPROCS(8))
-	go cm.ZmqProxy()
+	// go cm.ZmqProxy()
 	http.HandleFunc("/heartbeat", heartbeat)
 	http.HandleFunc("/ro_send_email", wrappers.ROWrapper[boutique.SendOrderConfirmationRequest, boutique.SendOrderConfirmationResponse](sendEmail))
+	slowpoke.SlowpokeInit()
+	fmt.Println("Server started on :3000")
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
 		panic(err)
