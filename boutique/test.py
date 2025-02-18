@@ -28,7 +28,6 @@ def exp(service_delay, request="home"):
     return throughput
 
 def run():
-    print("[test.py] Start of experiment")
     service_delay = {
         "cart":0,
         "checkout":0,
@@ -59,7 +58,11 @@ def run():
             else:
                 service_delay[service] = TARGET_PROCESSING_TIME_RANGE[1] - p_t
         slowdown.append(exp(service_delay))
-        predicted_throughput = 1000000/(1000000/slowdown[-1]-p_t)
+        try:
+            predicted_throughput = 1000000/(1000000/slowdown[-1]-(TARGET_PROCESSING_TIME_RANGE[1] - p_t))
+        except:
+            print("[test.py] Error: Division by zero")
+            predicted_throughput = -1
         predicted.append(predicted_throughput)
     
     err = [predicted[i]-groundtruth[i] for i in range(len(predicted))]
@@ -72,11 +75,12 @@ def run():
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 groundtruths, slowdowns, predicteds, errs = [], [], [], []
-for i in range(1):
-    groundtruth, slowdown = run()
+for i in range(3):
+    print(f"[test.py] Running experiment {i}...")
+    groundtruth, slowdown, predicted, err = run()
     groundtruths.append(groundtruth)
     slowdowns.append(slowdown)
-    predicteds.append(predict)
+    predicteds.append(predicted)
     errs.append(err)
 print("[test.py] Summary: ")
 for i in range(len(groundtruths[0])):

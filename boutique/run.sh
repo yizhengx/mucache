@@ -95,6 +95,7 @@ do
         break
     fi
 done
+sleep 10
 
 # run the load generator
 echo "[run.sh] Running warmup test"
