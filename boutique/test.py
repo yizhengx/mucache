@@ -2,9 +2,10 @@
 
 import os
 import subprocess
+import copy
 
 TARGET_SERVICE = "cart"
-TARGET_PROCESSING_TIME_RANGE = [0, 3000]
+TARGET_PROCESSING_TIME_RANGE = [0, 1000]
 
 def exp(service_delay, request="home"):
     env = os.environ.copy()
@@ -39,6 +40,7 @@ def run():
         "recommendations":0,
         "shipping":0
     }
+    original_service_delay = copy.deepcopy(service_delay)
     processing_time_diff = TARGET_PROCESSING_TIME_RANGE[1]-TARGET_PROCESSING_TIME_RANGE[0]
     processing_time_range = range(TARGET_PROCESSING_TIME_RANGE[0], TARGET_PROCESSING_TIME_RANGE[1], processing_time_diff//10)
 
@@ -56,8 +58,13 @@ def run():
             if service == TARGET_SERVICE:
                 service_delay[service] = TARGET_PROCESSING_TIME_RANGE[1]
             else:
-                service_delay[service] = TARGET_PROCESSING_TIME_RANGE[1] - p_t
-        slowdown.append(exp(service_delay))
+                service_delay[service] = original_service_delay[service] + TARGET_PROCESSING_TIME_RANGE[1] - p_t
+        res = exp(service_delay)
+        while int(res) == 0:
+            print("[test.py] Found 0 throughput, rerun experiment")
+            res = exp(service_delay)
+        slowdown.append(res)
+
         try:
             predicted_throughput = 1000000/(1000000/slowdown[-1]-(TARGET_PROCESSING_TIME_RANGE[1] - p_t))
         except:
@@ -75,7 +82,7 @@ def run():
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 groundtruths, slowdowns, predicteds, errs = [], [], [], []
-for i in range(3):
+for i in range(1):
     print(f"[test.py] Running experiment {i}...")
     groundtruth, slowdown, predicted, err = run()
     groundtruths.append(groundtruth)

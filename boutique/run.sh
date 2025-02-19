@@ -17,9 +17,15 @@ while [[ $(kubectl get pods | grep -v -E 'STATUS|ubuntu' | wc -l) -ne 0 ]]; do
     sleep 1
 done
 
-# deploy client
-echo "[run.sh] Deploying client"
-kubectl apply -f client.yaml
+kubectl get pod | grep ubuntu-client- 
+if [ $? -ne 0 ]
+then
+    echo "[run.sh] Client pod not found, deploying client"
+    kubectl apply -f client.yaml  
+fi
+# # deploy client
+# echo "[run.sh] Deploying client"
+# kubectl apply -f client.yaml
 
 echo "[run.sh] Waiting for client to be ready"
 ubuntu_client=$(kubectl get pod | grep ubuntu-client- | cut -f 1 -d " ") 
