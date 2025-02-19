@@ -48,7 +48,11 @@ def run():
     groundtruth = []
     for p_t in processing_time_range:
         service_delay[TARGET_SERVICE] = p_t
-        groundtruth.append(exp(service_delay))
+        res = exp(service_delay)
+        while int(res) == 0:
+            print("[test.py] Found 0 throughtput, rerun experiment")
+            res = exp(service_delay)
+        groundtruth.append(res)
     
     # slowdown
     slowdown = []
@@ -72,17 +76,17 @@ def run():
             predicted_throughput = -1
         predicted.append(predicted_throughput)
     
-    err = [predicted[i]-groundtruth[i] for i in range(len(predicted))]
+    err = [(predicted[i]-groundtruth[i])*100/groundtruth[i] for i in range(len(predicted))]
     print("[test.py] Groundtruth: ", groundtruth, flush=True)
     print("[test.py] Slowdown: ", slowdown, flush=True)
     print("[test.py] Predicted: ", predicted, flush=True)
-    print("[test.py] Error ", err, flush=True)
+    print("[test.py] Error percentage: ", err, flush=True)
 
     return groundtruth, slowdown, predicted, err
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 groundtruths, slowdowns, predicteds, errs = [], [], [], []
-for i in range(1):
+for i in range(2):
     print(f"[test.py] Running experiment {i}...")
     groundtruth, slowdown, predicted, err = run()
     groundtruths.append(groundtruth)
@@ -95,4 +99,4 @@ for i in range(len(groundtruths[0])):
     print(f"    Groundtruth: {groundtruths[i]}")
     print(f"    Slowdown:    {slowdowns[i]}")
     print(f"    Predicted:   {predicteds[i]}")
-    print(f"    Error:       {errs[i]}")
+    print(f"    Error Perc:  {errs[i]}")
