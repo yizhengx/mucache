@@ -6,6 +6,7 @@ request=${1:-home}
 thread=${2:-16}
 conn=${3:-512}
 duration=${4:-60}
+rate=${5:-1000}
 echo "[run.sh] Running $request with $thread threads, $conn connections, and $duration seconds"
 
 # delete all services
@@ -105,10 +106,10 @@ sleep 10
 
 # run the load generator
 echo "[run.sh] Running warmup test"
-kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d3s -L -s /wrk/scripts/online-boutique/home.lua http://frontend:80 &
+kubectl exec $ubuntu_client -- /wrk2/wrk -t${thread} -c${conn} -R${rate} -d3s -L -s /wrk/scripts/online-boutique/home.lua http://frontend:80 &
 sleep 10
-echo "[run.sh] /wrk/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/home.lua http://frontend:80"
-kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/home.lua http://frontend:80 &
+echo "[run.sh] /wrk2/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/home.lua http://frontend:80"
+kubectl exec $ubuntu_client -- /wrk2/wrk -t${thread} -c${conn} -R${rate} -d${duration}s -L -s /wrk/scripts/online-boutique/home.lua http://frontend:80 &
 pid=$!
 
 sleep 50

@@ -86,7 +86,7 @@ def run():
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 groundtruths, slowdowns, predicteds, errs = [], [], [], []
-for i in range(2):
+for i in range(3):
     print(f"[test.py] Running experiment {i}...")
     groundtruth, slowdown, predicted, err = run()
     groundtruths.append(groundtruth)
@@ -94,7 +94,7 @@ for i in range(2):
     predicteds.append(predicted)
     errs.append(err)
 print("[test.py] Summary: ")
-for i in range(len(groundtruths[0])):
+for i in range(len(groundtruths)):
     print(f"[test.py] Result for the experiment {i}: ")
     print(f"    Groundtruth: {groundtruths[i]}")
     print(f"    Slowdown:    {slowdowns[i]}")
