@@ -4,13 +4,48 @@ import os
 import subprocess
 import copy
 
-TARGET_SERVICE = "cart"
+TARGET_SERVICE = "currency"
 TARGET_PROCESSING_TIME_RANGE = [0, 1000]
+TARGET_NUM_EXP = 10
+# REQUEST_RATIO = {
+#     "cart": 0.44064534390036797, 
+#     "checkout": 0.04751391640720823, 
+#     "currency": 0.2605717520520804, 
+#     "email": 0.0, 
+#     "frontend": 1.0, 
+#     "payment": 0.04751391640720823, 
+#     "productcatalog": 0.6084724974054156, 
+#     "recommendations": 0.0, 
+#     "shipping": 0.09502783281441646
+# }
+REQUEST_RATIO = {
+    'cart': 0.45175405908969923, 
+    'checkout': 0.05106201756720788, 
+    'currency': 0.2597231833910035, 
+    'email': 0.0, 
+    'frontend': 1.0, 
+    'payment': 0.05106201756720788, 
+    'product_catalog': 0.6091136545115784, 
+    'recommendations': 0.0, 
+    'shipping': 0.10212403513441576
+}
+BASELINE_SERVICE_PROCESSING_TIME = {
+        "cart":0,
+        "checkout":0,
+        "currency":1000,
+        "email":0,
+        "frontend":0,
+        "payment":0,
+        "product_catalog":0,
+        "recommendations":0,
+        "shipping":0
+    }
 
 def exp(service_delay, request="home"):
     env = os.environ.copy()
     for service, delay in service_delay.items():
         env[f"SLOWPOKE_DELAY_MICROS_{service.upper()}"] = str(delay)
+    env["SLOWPOKE_PRERUN"] = "false" # Disable request counting during normal execution
     cmd = f"bash run.sh {request}"
     print(f"[test.py] Running {request} request with the following configuration: {service_delay}", flush=True)
     process = subprocess.Popen(cmd, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -29,20 +64,9 @@ def exp(service_delay, request="home"):
     return throughput
 
 def run():
-    service_delay = {
-        "cart":0,
-        "checkout":0,
-        "currency":0,
-        "email":0,
-        "frontend":0,
-        "payment":0,
-        "product_catalog":0,
-        "recommendations":0,
-        "shipping":0
-    }
-    original_service_delay = copy.deepcopy(service_delay)
+    service_delay = copy.deepcopy(BASELINE_SERVICE_PROCESSING_TIME)
     processing_time_diff = TARGET_PROCESSING_TIME_RANGE[1]-TARGET_PROCESSING_TIME_RANGE[0]
-    processing_time_range = range(TARGET_PROCESSING_TIME_RANGE[0], TARGET_PROCESSING_TIME_RANGE[1], processing_time_diff//10)
+    processing_time_range = range(TARGET_PROCESSING_TIME_RANGE[0], TARGET_PROCESSING_TIME_RANGE[1], processing_time_diff//TARGET_NUM_EXP)
 
     # groundtruth
     groundtruth = []
@@ -62,7 +86,13 @@ def run():
             if service == TARGET_SERVICE:
                 service_delay[service] = TARGET_PROCESSING_TIME_RANGE[1]
             else:
-                service_delay[service] = original_service_delay[service] + TARGET_PROCESSING_TIME_RANGE[1] - p_t
+                if REQUEST_RATIO[service] == 0:
+                    delay = 0
+                else:
+                    delay = int(
+                        ((TARGET_PROCESSING_TIME_RANGE[1] - p_t)*REQUEST_RATIO[TARGET_SERVICE]) / REQUEST_RATIO[service]
+                    )
+                service_delay[service] = BASELINE_SERVICE_PROCESSING_TIME[service] + delay
         res = exp(service_delay)
         while int(res) == 0:
             print("[test.py] Found 0 throughput, rerun experiment")
@@ -70,7 +100,8 @@ def run():
         slowdown.append(res)
 
         try:
-            predicted_throughput = 1000000/(1000000/slowdown[-1]-(TARGET_PROCESSING_TIME_RANGE[1] - p_t))
+            delay = (TARGET_PROCESSING_TIME_RANGE[1] - p_t)*REQUEST_RATIO[TARGET_SERVICE]
+            predicted_throughput = 1000000/(1000000/slowdown[-1]-delay)
         except:
             print("[test.py] Error: Division by zero")
             predicted_throughput = -1
