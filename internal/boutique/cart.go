@@ -85,11 +85,19 @@ func AddItem(ctx context.Context, userId string, productId string, quantity int3
 		ProductId: productId,
 		Quantity:  quantity,
 	}
-	cart := getCartDefault(ctx, userId)
+	// cart := getCartDefault(ctx, userId)
+	cart, err := _localGetCart(ctx, userId)
+	if err != nil {
+		cart = Cart{
+			UserId: userId,
+			Items:  []CartItem{},
+		}
+	}
 
 	// Append the new item to the cart
 	cart.Items = append(cart.Items, item)
-	state.SetState(ctx, userId, cart)
+	local_carts[userId] = cart
+	// state.SetState(ctx, userId, cart)
 	return true
 }
 
@@ -108,8 +116,16 @@ func GetCart(ctx context.Context, userId string) Cart {
 }
 
 func EmptyCart(ctx context.Context, userId string) bool {
-	cart := getCartDefault(ctx, userId)
+	// cart := getCartDefault(ctx, userId)
+	cart, err := _localGetCart(ctx, userId)
+	if err != nil {
+		cart = Cart{
+			UserId: userId,
+			Items:  []CartItem{},
+		}
+	}
 	cart.Items = []CartItem{}
-	state.SetState(ctx, userId, cart)
+	// state.SetState(ctx, userId, cart)
+	local_carts[userId] = cart
 	return true
 }

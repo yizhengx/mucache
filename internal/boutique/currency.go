@@ -3,7 +3,7 @@ package boutique
 import (
 	"context"
 	"fmt"
-	"github.com/eniac/mucache/pkg/state"
+	// "github.com/eniac/mucache/pkg/state"
 	"math"
 	"strconv"
 	"strings"
@@ -13,10 +13,15 @@ const (
 	debug_currency = false
 )
 
-var allCurrencies []Currency
+// var allCurrencies []Currency
+var allCurrencies map[string]Currency
 
 func InitAllCurrencies(ctx context.Context, currencies []Currency) {
-	allCurrencies = currencies
+	// allCurrencies = currencies
+	allCurrencies = make(map[string]Currency)
+	for _, currency := range currencies {
+		allCurrencies[currency.CurrencyCode] = currency
+	}
 	fmt.Println("InitAllCurrencies: ", len(allCurrencies))
 }
 
@@ -35,23 +40,30 @@ func _MoneyToString(m Money) string {
 }
 
 func SetCurrencySupport(ctx context.Context, currency Currency) bool {
-	state.SetState(ctx, currency.CurrencyCode, currency)
+	// state.SetState(ctx, currency.CurrencyCode, currency)
+	allCurrencies[currency.CurrencyCode] = currency
 	return true
 }
 
 func InitCurrencies(ctx context.Context, currencies []Currency) {
-	currencyCodes := make([]string, len(currencies))
-	for i, currency := range currencies {
-		currencyCodes[i] = currency.CurrencyCode
+
+	for _, currency := range currencies {
 		SetCurrencySupport(ctx, currency)
 	}
-	state.SetState(ctx, "CURRENCIES", currencyCodes)
+
+	// currencyCodes := make([]string, len(currencies))
+	// for i, currency := range currencies {
+	// 	currencyCodes[i] = currency.CurrencyCode
+	// 	SetCurrencySupport(ctx, currency)
+	// }
+	// state.SetState(ctx, "CURRENCIES", currencyCodes)
 }
 
 func ConvertCurrency(ctx context.Context, amount Money, toCurrency string) Money {
-	fromRate, err := state.GetState[Currency](ctx, amount.Currency)
-	if err != nil {
-		panic(err)
+	// fromRate, err := state.GetState[Currency](ctx, amount.Currency)
+	fromRate, ok := allCurrencies[amount.Currency]
+	if !ok {
+		panic(fmt.Errorf("currency %s not found", amount.Currency))
 	}
 
 	fromRate64, err := strconv.ParseFloat(fromRate.Rate, 64)
@@ -65,9 +77,10 @@ func ConvertCurrency(ctx context.Context, amount Money, toCurrency string) Money
 	euros.Nanos = math.Round(euros.Nanos)
 
 	// Convert: EUR --> to_currency
-	toRate, err := state.GetState[Currency](ctx, toCurrency)
-	if err != nil {
-		panic(err)
+	// toRate, err := state.GetState[Currency](ctx, toCurrency)
+	toRate, ok := allCurrencies[toCurrency]
+	if !ok {
+		panic(fmt.Errorf("currency %s not found", toCurrency))
 	}
 
 	toRate64, err := strconv.ParseFloat(toRate.Rate, 64)
@@ -85,8 +98,11 @@ func ConvertCurrency(ctx context.Context, amount Money, toCurrency string) Money
 
 func GetSupportedCurrencies(ctx context.Context) []Currency {
 	if debug_currency { fmt.Println("GetSupportedCurrencies ") }
-
-	return allCurrencies
+	var currencies []Currency
+	for _, c := range allCurrencies {
+		currencies = append(currencies, c)
+	}
+	return currencies
 
 	// keys, err := state.GetState[[]string](ctx, "CURRENCIES")
 	// if err != nil {

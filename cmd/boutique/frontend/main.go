@@ -24,11 +24,12 @@ func home(ctx context.Context, req *boutique.HomeRequest) *boutique.HomeResponse
 	return &resp
 }
 
-//func setCurrency(ctx context.Context, req *boutique.FrontendSetCurrencyRequest) *boutique.FrontendSetCurrencyResponse {
-//	boutique.FrontendSetCurrency(ctx, req.Cur)
-//	resp := boutique.FrontendSetCurrencyResponse{OK: "OK"}
-//	return &resp
-//}
+func setCurrency(ctx context.Context, req *boutique.FrontendSetCurrencyRequest) *boutique.FrontendSetCurrencyResponse {
+	slowpoke.SlowpokeCheck("setCurrency")
+	boutique.FrontendSetCurrency(ctx, req.Cur)
+	resp := boutique.FrontendSetCurrencyResponse{OK: "OK"}
+	return &resp
+}
 
 func browseProduct(ctx context.Context, req *boutique.BrowseProductRequest) *boutique.BrowseProductResponse {
 	slowpoke.SlowpokeCheck("browseProduct")
@@ -59,7 +60,7 @@ func main() {
 	// go cm.ZmqProxy() // Disable cache proxy
 	http.HandleFunc("/heartbeat", heartbeat)
 	http.HandleFunc("/ro_home", wrappers.ROWrapper[boutique.HomeRequest, boutique.HomeResponse](home))
-	//http.HandleFunc("/set_currency", wrappers.NonROWrapper[boutique.FrontendSetCurrencyRequest, boutique.FrontendSetCurrencyResponse](setCurrency))
+	http.HandleFunc("/set_currency", wrappers.NonROWrapper[boutique.FrontendSetCurrencyRequest, boutique.FrontendSetCurrencyResponse](setCurrency))
 	http.HandleFunc("/ro_browse_product", wrappers.ROWrapper[boutique.BrowseProductRequest, boutique.BrowseProductResponse](browseProduct))
 	//http.HandleFunc("/add_to_cart", wrappers.NonROWrapper[boutique.AddToCartRequest, boutique.AddToCartResponse](addToCart))
 	http.HandleFunc("/ro_view_cart", wrappers.ROWrapper[boutique.ViewCartRequest, boutique.ViewCartResponse](viewCart))
