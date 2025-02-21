@@ -62,7 +62,7 @@ func main() {
 	http.HandleFunc("/ro_home", wrappers.ROWrapper[boutique.HomeRequest, boutique.HomeResponse](home))
 	http.HandleFunc("/set_currency", wrappers.NonROWrapper[boutique.FrontendSetCurrencyRequest, boutique.FrontendSetCurrencyResponse](setCurrency))
 	http.HandleFunc("/ro_browse_product", wrappers.ROWrapper[boutique.BrowseProductRequest, boutique.BrowseProductResponse](browseProduct))
-	//http.HandleFunc("/add_to_cart", wrappers.NonROWrapper[boutique.AddToCartRequest, boutique.AddToCartResponse](addToCart))
+	http.HandleFunc("/add_to_cart", wrappers.NonROWrapper[boutique.AddToCartRequest, boutique.AddToCartResponse](addToCart))
 	http.HandleFunc("/ro_view_cart", wrappers.ROWrapper[boutique.ViewCartRequest, boutique.ViewCartResponse](viewCart))
 	http.HandleFunc("/checkout", wrappers.ROWrapper[boutique.CheckoutRequest, boutique.CheckoutResponse](checkout))
 	slowpoke.SlowpokeInit()
