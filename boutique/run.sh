@@ -105,10 +105,10 @@ sleep 10
 
 # run the load generator
 echo "[run.sh] Running warmup test"
-kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d3s -L -s /wrk/scripts/online-boutique/mix.lua http://frontend:80
+kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d3s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80
 sleep 10
-echo "[run.sh] /wrk/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/mix.lua http://frontend:80"
-kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/mix.lua http://frontend:80 &
+echo "[run.sh] /wrk/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80"
+kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d${duration}s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80 &
 pid=$!
 
 sleep 50

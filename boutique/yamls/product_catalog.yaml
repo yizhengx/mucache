@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
         - name: "productcatalog"
-          image: yizhengx/mucache:prebuilt
+          image: sleepymug/mucache:prebuilt
           env:
             - name: APP_PORT
               value: "3000"
