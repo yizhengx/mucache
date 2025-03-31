@@ -13,7 +13,7 @@ import (
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	slowpoke.SlowpokeCheck("home");
 	ctx, _ := wrappers.SetupCtxFromHTTPReq(r, false)
-	for i := 0; i < 80000; i++ {}
+	slowpoke.CPUSpinTime(400)
 	req := trivial.TrivialRequest{Q: "how are things?"}
 	resp := slowpoke.Invoke[trivial.TrivialResponse](ctx, "service2", "ep1", req)
 	fmt.Fprintf(w, "Welcome to the Home Page %v!", resp.A)

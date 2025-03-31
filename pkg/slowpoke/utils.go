@@ -188,6 +188,37 @@ func getThreadCPUTime() int64 {
 	return time.Nano()
 }
 
+func CPUSpinTime(micro int) {
+	lockThread := true
+	if micro >= 0 {
+		// Threads need to be locked because otherwise util.ThreadCPUTime() can change in the middle of execution
+		takenSurplus := atomic.SwapInt64(&sleepSurplus, 0);
+		sleepTime := int64(micro*1000.0);
+		common := min(takenSurplus, sleepTime);
+		takenSurplus -= common;
+		sleepTime -= common;
+		if lockThread {
+			runtime.LockOSThread()
+		}
+
+		current := getThreadCPUTime()
+		target := current + sleepTime
+
+		for current < target {
+			for i := int64(0) ; i < 200000; i++ {
+			}
+			current = getThreadCPUTime();
+		}
+
+		takenSurplus += current - target;
+		atomic.AddInt64(&sleepSurplus, takenSurplus);
+
+		if lockThread {
+			runtime.UnlockOSThread()
+		}
+	}
+}
+
 func SlowpokeCheck(serviceFuncName string) {
 	// // Record request
 	// if _, ok := requestCounters[unix.Gettid()]; !ok {
@@ -216,7 +247,7 @@ func SlowpokeCheck(serviceFuncName string) {
 	// Delay
 	sync_guard.Lock()
 	accumulatedDelay += delayNanos
-	if accumulatedDelay > 50000000 {
+	if accumulatedDelay > pokerBatchThreshold {
 		start := time.Now()
 		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
 		_, err := pipefile.Write(pipebuf);
@@ -238,34 +269,7 @@ func SlowpokeCheck(serviceFuncName string) {
 	sync_guard.Unlock()
 
 	// Process
-	lockThread := true
-	if processingMicros >= 0 {
-		// Threads need to be locked because otherwise util.ThreadCPUTime() can change in the middle of execution
-		takenSurplus := atomic.SwapInt64(&sleepSurplus, 0);
-		sleepTime := int64(processingMicros*1000.0);
-		common := min(takenSurplus, sleepTime);
-		takenSurplus -= common;
-		sleepTime -= common;
-		if lockThread {
-			runtime.LockOSThread()
-		}
-
-		current := getThreadCPUTime()
-		target := current + sleepTime
-
-		for current < target {
-			for i := int64(0) ; i < 200000; i++ {
-			}
-			current = getThreadCPUTime();
-		}
-
-		takenSurplus += current - target;
-		atomic.AddInt64(&sleepSurplus, takenSurplus);
-
-		if lockThread {
-			runtime.UnlockOSThread()
-		}
-	}
+	CPUSpinTime(processingMicros)
 }
 
 func Invoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {

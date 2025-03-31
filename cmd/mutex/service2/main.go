@@ -8,11 +8,16 @@ import (
 	"github.com/eniac/mucache/pkg/wrappers"
 	"net"
 	"net/http"
-
+	"sync"
 )
+
+var lock sync.Mutex
 
 func ep1(ctx context.Context, request *trivial.TrivialRequest) *trivial.TrivialResponse {
 	slowpoke.SlowpokeCheck("ep1")
+	//lock.Lock()
+	//defer lock.Unlock()
+	slowpoke.CPUSpinTime(350)
 	resp := trivial.TrivialResponse{A: "ok"}
 	return &resp
 }
