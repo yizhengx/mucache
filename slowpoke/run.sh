@@ -15,7 +15,7 @@ if [[ $benchmark == "synthetic" ]]; then
     YAML_PATH=$benchmark/$request/yamls
 fi
 
-supported_benchmarks=("boutique" "social" "movie" "hotel" "synthetic")
+supported_benchmarks=("boutique" "social" "movie" "hotel" "synthetic" "mutex")
 
 check_benchmark_supported() {
     local benchmark=$1
@@ -118,6 +118,9 @@ run_test() {
     elif [[ $benchmark == "synthetic" ]]; then
         echo "[run.sh] /wrk/wrk -t${thread} -c${conn} -d3s -L http://service0:80/endpoint1"
         output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d3s -L http://service0:80/endpoint1)
+    elif [[ $benchmark == "mutex" ]]; then
+        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} -d3s -L http://service1:80/"
+        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d3s -L http://service1:80/)
     else 
         echo "[run.sh] /wrk/wrk -t${thread} -c${conn} -d3s -L http://localhost:3000"
         output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} -d3s -L http://localhost:3000)
@@ -140,6 +143,9 @@ run_test() {
     elif [[ $benchmark == "synthetic" ]]; then
         echo "[run.sh] /wrk/wrk --timeout 20s -t${thread} -c${conn} -d${duration}s -L -s /wrk/fix_req_n.lua http://service0:80/endpoint1"
         kubectl exec $ubuntu_client -- /wrk/wrk --timeout 20s -t${thread} -c${conn} -d${duration}s -L -s /wrk/fix_req_n.lua http://service0:80/endpoint1
+    elif [[ $benchmark == "mutex" ]]; then
+        echo "[run.sh] /wrk/wrk --timeout 20s -t${thread} -c${conn} -d${duration}s -L -s /wrk/fix_req_n.lua http://service1:80/"
+        kubectl exec $ubuntu_client -- /wrk/wrk --timeout 20s -t${thread} -c${conn} -d${duration}s -L -s /wrk/fix_req_n.lua http://service1:80/
     else
         echo "[run.sh] /wrk/wrk --timeout 20s -t${thread} -c${conn} -d${duration}s -s /wrk/fix_req_n.lua -L http://localhost:3000"
         kubectl exec $ubuntu_client -- /wrk/wrk --timeout 20s -t${thread} -c${conn} -d${duration}s -s /wrk/fix_req_n.lua -L http://localhost:3000
@@ -208,7 +214,7 @@ while [[ $(kubectl get pods | grep -v -E '1/1|STATUS' | wc -l) -ne 0 ]]; do
 done
 echo "[run.sh] All pods are running"
 
-if [[ $benchmark != "synthetic" ]]; then
+if [[ $benchmark != "synthetic" && $benchmark != "mutex" ]]; then
     check_connectivity_all
     populate $benchmark
 fi
