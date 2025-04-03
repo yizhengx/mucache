@@ -56,11 +56,11 @@ spec:
             - name: EXPIRATION_TTL
               value: "0"
             - name: SLOWPOKE_DELAY_MICROS
-              value: "${SLOWPOKE_DELAY_MICROS_SERVICE0}"
+              value: "${SLOWPOKE_DELAY_MICROS_SERVICE7}"
             - name: SLOWPOKE_PRERUN
               value: "${SLOWPOKE_PRERUN}"
             - name: SLOWPOKE_PROCESSING_MICROS
-              value: "${SLOWPOKE_PROCESSING_MICROS_SERVICE0}"
+              value: "${SLOWPOKE_PROCESSING_MICROS_SERVICE7}"
             - name: LONGCHAIN_SERVICE_NUM
               value: "7"
           ports:
@@ -68,3 +68,13 @@ spec:
             - containerPort: 5550
             - containerPort: 5551
           imagePullPolicy: Always
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - worker8
