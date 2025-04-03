@@ -11,6 +11,7 @@
 #include <pthread.h>
 
 #define FIFO_PATH "/tmp/slowpoke_fifo"
+#define FIFO_RECOVER_PATH "/tmp/slowpoke_fifo_recover"
 
 // Global variables for thread communication
 int child_exited = 0;
@@ -67,7 +68,16 @@ void precise_sleep(long long sleep_ns) {
 
 // Function for the FIFO monitoring thread
 void *monitor_fifo(void *arg) {
+    // int ret = nice(-15);
+    // if (ret == -1 && errno != 0) {
+    //     perror("nice");
+    //     pthread_exit(NULL);
+    // }
+    // printf("nice set to %d\n", ret);
+    // fflush(stdout);
+
     int fifo_fd = open(FIFO_PATH, O_RDONLY | O_NONBLOCK);
+    int fifo_recover_fd = open(FIFO_RECOVER_PATH, O_WRONLY);
     int is_blocking = 0;
     char buffer[256];
     pid_t child_pgid = *((pid_t *)arg);
@@ -75,7 +85,10 @@ void *monitor_fifo(void *arg) {
         perror("open");
         pthread_exit(NULL);
     }
-    // long long accumulated_nano_sleep = 0;
+    long long accumulated_nano_sleep = 0;
+
+    char send_buf[8];
+    // send_buf[0] = 0;
 
     while (1) {
         // Attempt to read from the FIFO
@@ -100,16 +113,20 @@ void *monitor_fifo(void *arg) {
                 }
             }
             long long nanosleep = *(long long *)(&buffer[0]);
-            // accumulated_nano_sleep += nanosleep;
-            // long long start_time = get_current_time_ns();
+            accumulated_nano_sleep += nanosleep;
+            long long start_time = get_current_time_ns();
             if (kill(-child_pgid, SIGSTOP) == -1) {
                 printf("error in stopping");
                 fflush(stdout);
             }
-            precise_sleep(nanosleep);
-            // precise_sleep(accumulated_nano_sleep);
-            // long long end_time = get_current_time_ns();
-            // accumulated_nano_sleep -= (end_time - start_time);
+            // precise_sleep(nanosleep);
+            precise_sleep(accumulated_nano_sleep);
+            long long end_time = get_current_time_ns();
+            accumulated_nano_sleep -= (end_time - start_time);
+            if (write(fifo_recover_fd, send_buf, sizeof(send_buf)) == -1) {
+                perror("write");
+                pthread_exit(NULL);
+            }
             if (kill(-child_pgid, SIGCONT) == -1) {
                 printf("error in conting");
                 fflush(stdout);
@@ -159,6 +176,19 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
     }
+    printf("FIFO created\n");
+
+    // Create the recovery FIFO
+    if (mkfifo(FIFO_RECOVER_PATH, 0666) == -1) {
+        printf("FIFO recover failed to create\n");
+        fflush(stdout);
+        if (errno != EEXIST) {
+            perror("mkfifo");
+            exit(EXIT_FAILURE);
+        }
+    }
+    printf("Recovery FIFO created\n");
+    fflush(stdout);
 
     // Fork a child process
     pid_t pid = fork();
@@ -171,6 +201,11 @@ int main(int argc, char *argv[]) {
         // Set the FIFO path as an environment variable
         int fd;
         if (setenv("SLOWPOKE_FIFO_PATH", FIFO_PATH, 1) == -1) {
+            perror("setenv");
+            exit(EXIT_FAILURE);
+        }
+
+        if (setenv("SLOWPOKE_FIFO_RECOVER_PATH", FIFO_RECOVER_PATH, 1) == -1) {
             perror("setenv");
             exit(EXIT_FAILURE);
         }
