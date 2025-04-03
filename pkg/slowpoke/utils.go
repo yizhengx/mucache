@@ -16,6 +16,8 @@ import (
 	"sync"
 	"runtime"
 	"sync/atomic"
+	"io"
+	// "syscall"
 )
 
 const printIntervalMillis = 30*1000
@@ -256,6 +258,9 @@ func SlowpokeCheck(serviceFuncName string) {
 			os.Stdout.Sync()
 			return
 		}
+
+		// syscall.Syscall(syscall.SYS_SCHED_YIELD, 0, 0, 0) // Yield the CPU
+
 		elapsed := time.Since(start)
 		start = start.Add(elapsed)
 		accumulatedDelay -= elapsed.Nanoseconds()
@@ -265,6 +270,9 @@ func SlowpokeCheck(serviceFuncName string) {
 		      start = start.Add(elapsed)
 		      accumulatedDelay -= elapsed.Nanoseconds()
 		}
+
+		// time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
+		// accumulatedDelay = 0
 	}
 	sync_guard.Unlock()
 
@@ -291,6 +299,48 @@ func Invoke[T interface{}](ctx context.Context, app string, method string, input
 	performRequest[T](ctx, req, &res, app, method, buf)
 	sync_guard.RLock()
 	sync_guard.RUnlock()
+	return res
+}
+
+func performRequestSynth(ctx context.Context, req *http.Request, res *string, app string, method string, argBytes []byte) {
+	resp, err := common.HTTPClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	utility.Assert(resp.StatusCode == http.StatusOK)
+	defer resp.Body.Close()
+	bodyBytes, err := io.ReadAll(resp.Body)
+    if err != nil {
+        panic(err)
+    }
+	*res = string(bodyBytes)
+}
+
+func RequestRlock() {
+	sync_guard.RLock()
+	sync_guard.RUnlock()
+}
+
+func InvokeSynthtic(ctx context.Context, app string, method string, input interface{}) string {
+	sync_guard.RLock()
+    sync_guard.RUnlock()
+	buf, err := json.Marshal(input)
+	if err != nil {
+		panic(err)
+	}
+	var res string
+	// Use kubernete native DNS addr
+	url := fmt.Sprintf("http://%s.%s.svc.cluster.local:%s/%s", app, "default", "80", method)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(buf))
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		panic(err)
+	}
+	sync_guard.RLock()
+    sync_guard.RUnlock()
+	performRequestSynth(ctx, req, &res, app, method, buf)
+	sync_guard.RLock()
+    sync_guard.RUnlock()
 	return res
 }
 
@@ -331,3 +381,4 @@ func (c *tracedConn) Write(b []byte) (n int, err error) {
         sync_guard.RUnlock()
 	return
 }
+
