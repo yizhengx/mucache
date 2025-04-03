@@ -61,6 +61,8 @@ spec:
               value: "${SLOWPOKE_PRERUN}"
             - name: SLOWPOKE_PROCESSING_MICROS
               value: "${SLOWPOKE_PROCESSING_MICROS_SERVICE4}"
+            - name: SLOWPOKE_POKER_BATCH_THRESHOLD
+              value: "${SLOWPOKE_POKER_BATCH_THRESHOLD}"
             - name: LONGCHAIN_SERVICE_NUM
               value: "4"
           ports:
