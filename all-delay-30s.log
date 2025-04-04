@@ -1,0 +1,60 @@
+[run.sh] Running benchmark longchain with request x, thread 1, conn 1, duration 60
+[run.sh] Deleting all services
+[run.sh] Waiting for all pods to be deleted
+[run.sh] Deploying all services
+service/service0 created
+deployment.apps/service0 created
+service/service1 created
+deployment.apps/service1 created
+service/service2 created
+deployment.apps/service2 created
+service/service3 created
+deployment.apps/service3 created
+service/service4 created
+deployment.apps/service4 created
+service/service5 created
+deployment.apps/service5 created
+service/service6 created
+deployment.apps/service6 created
+service/service7 created
+deployment.apps/service7 created
+service/service8 created
+deployment.apps/service8 created
+[run.sh] Client pod not found, deploying client
+deployment.apps/ubuntu-client created
+[run.sh] Waiting for all pods to be running
+[run.sh] All pods are running
+[run.sh] Starting the rust proxy first for longchain
+[run.sh] Running warmup test
+[run.sh] /wrk/wrk -t1 -c1 -d3s -L http://service0:80/
+
+[run.sh] Speed is , duration is 
+[run.sh] Fix the request number.
+[run.sh] Running the actual test
+[run.sh] /wrk/wrk --timeout 20s -t1 -c1 -d30s -L http://service6:80/home
+[run.sh] Checking the resource usage
+NAME                             CPU(cores)   MEMORY(bytes)   
+service0-76db4c4c48-nb6ll        11m          5Mi             
+service1-6f464ff74d-58glb        14m          5Mi             
+service2-798799599f-7fq6w        14m          5Mi             
+service3-8445c65f66-sbbxb        15m          5Mi             
+service4-6bf5b7b796-8r2jt        12m          5Mi             
+service5-77965d4cd7-z625f        15m          5Mi             
+service6-585878d545-hjq8b        299m         7Mi             
+service7-c9c44b894-49hxs         1m           2Mi             
+service8-dc6d9b4b7-lpz7d         0m           2Mi             
+ubuntu-client-76886f6bbd-v9tcc   3m           1Mi             
+Running 30s test @ http://service6:80/home
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    28.98ms   22.86ms 179.06ms   91.65%
+    Req/Sec    39.09     13.47    80.00     77.74%
+  Latency Distribution
+     50%   24.86ms
+     75%   31.97ms
+     90%   39.35ms
+     99%  147.79ms
+  1153 requests in 30.02s, 154.26KB read
+Requests/sec:     38.40
+Transfer/sec:      5.14KB
+[run.sh] Test finished with status 0
