@@ -270,12 +270,17 @@ func SlowpokeCheck(serviceFuncName string) {
 		}
 	}
 
+	// Process
+	CPUSpinTime(processingMicros)
+}
+
+func SlowpokeDelay() {
 	// Delay
 	sync_guard.Lock()
 	accumulatedDelay += delayNanos
 	reqcount += 1
 	// if accumulatedDelay > pokerBatchThreshold {
-	if reqcount > 200 {
+	if reqcount >= 100 {
 		// start := time.Now()
 		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
 		_, err := pipefile.Write(pipebuf);
@@ -305,11 +310,17 @@ func SlowpokeCheck(serviceFuncName string) {
 			return
 		}
 		accumulatedDelay = 0
+		reqcount = 0
 	}
 	sync_guard.Unlock()
+}
 
-	// Process
-	CPUSpinTime(processingMicros)
+func Barrier1() {
+     sync_guard.RLock()
+}
+
+func Barrier2() {
+     sync_guard.RUnlock()
 }
 
 func Invoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {

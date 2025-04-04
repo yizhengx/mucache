@@ -16,15 +16,36 @@ var nextServ string;
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	slowpoke.SlowpokeCheck("home");
-	if (snum > 0) {
-		ctx, _ := wrappers.SetupCtxFromHTTPReq(r, false)
-		req := trivial.TrivialRequest{Q: "how are things?"}
-		resp := slowpoke.Invoke[trivial.TrivialResponse](ctx, nextServ, "ep1", req)
-		fmt.Fprintf(w, "Resp %v!", resp.A)
-	} else {
-		fmt.Fprintf(w, "Resp 0!")
+	var reply string;
+	ctx, _ := wrappers.SetupCtxFromHTTPReq(r, false)
+	req := trivial.TrivialRequest{Q: "how are things?"}
+	for i := 0; i < snum; i++ {
+		serv := fmt.Sprintf("service%d", i);
+		resp := slowpoke.Invoke[trivial.TrivialResponse](ctx, serv, "ep2", req)
+		reply = resp.A
+	} 
+	fmt.Fprintf(w, reply)
+	if f, ok := w.(http.Flusher); ok {
+		f.Flush() // Force buffer to flush
 	}
+	slowpoke.SlowpokeDelay()
 }
+
+// func homeHandler(w http.ResponseWriter, r *http.Request) {
+// 	slowpoke.SlowpokeCheck("home");
+// 	var reply string;
+// 	if (snum > 0) {
+// 		ctx, _ := wrappers.SetupCtxFromHTTPReq(r, false)
+// 		req := trivial.TrivialRequest{Q: "how are things?"}
+// 		resp := slowpoke.Invoke[trivial.TrivialResponse](ctx, nextServ, "ep1", req)
+// 		reply = resp.A
+// 	} else {
+// 		reply = "hoho"
+// 	}
+// 	slowpoke.Barrier()
+// 	fmt.Fprintf(w, reply)
+// 	slowpoke.SlowpokeDelay()
+// }
 
 func ep1(ctx context.Context, request *trivial.TrivialRequest) *trivial.TrivialResponse {
 	slowpoke.SlowpokeCheck("ep1")
@@ -32,6 +53,12 @@ func ep1(ctx context.Context, request *trivial.TrivialRequest) *trivial.TrivialR
 		req := trivial.TrivialRequest{Q: "how are things?"}
 		slowpoke.Invoke[trivial.TrivialResponse](ctx, nextServ, "ep1", req)
 	}
+	resp := trivial.TrivialResponse{A: "ok"}
+	return &resp
+}
+
+func ep2(ctx context.Context, request *trivial.TrivialRequest) *trivial.TrivialResponse {
+	slowpoke.SlowpokeCheck("ep1")
 	resp := trivial.TrivialResponse{A: "ok"}
 	return &resp
 }
@@ -45,7 +72,8 @@ func main() {
 		fmt.Printf("no service number\n")
 		return
 	}
-	http.HandleFunc("/ep1", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep1))
+	http.HandleFunc("/ep1", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep1, slowpoke.SlowpokeDelay))
+	http.HandleFunc("/ep2", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep2, slowpoke.SlowpokeDelay))
 	http.HandleFunc("/home", homeHandler)
 	slowpoke.SlowpokeInit()
 	fmt.Println("Server started on :3000")

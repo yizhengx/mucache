@@ -120,7 +120,7 @@ func PreCall(ctx context.Context, ca cm.CallArgs) (cm.ReturnVal, bool) {
 	return ret, exists
 }
 
-func ROWrapper[ReqType interface{}, RespType interface{}](handler func(context.Context, *ReqType) *RespType) func(http.ResponseWriter, *http.Request) {
+func ROWrapper[ReqType interface{}, RespType interface{}](handler func(context.Context, *ReqType) *RespType, callback func()) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//glog.Info("Start SetupCtx")
 		ctx, input := SetupCtxFromHTTPReq(r, true)
@@ -141,10 +141,13 @@ func ROWrapper[ReqType interface{}, RespType interface{}](handler func(context.C
 		PreReqEnd(ctx, cm.ReturnVal(respByte))
 		//glog.Info("End PreReqEnd")
 		utility.DumpJson(resp, w)
+		if callback != nil {
+			callback()
+		}
 	}
 }
 
-func NonROWrapper[ReqType interface{}, RespType interface{}](handler func(context.Context, *ReqType) *RespType) func(http.ResponseWriter, *http.Request) {
+func NonROWrapper[ReqType interface{}, RespType interface{}](handler func(context.Context, *ReqType) *RespType, cb func()) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx, input := SetupCtxFromHTTPReq(r, false)
 		var req ReqType
@@ -153,11 +156,16 @@ func NonROWrapper[ReqType interface{}, RespType interface{}](handler func(contex
 			panic(err)
 		}
 		resp := handler(ctx, &req)
-		respByte, err := json.Marshal(resp)
+		//respByte, err := json.Marshal(resp)
 		if err != nil {
 			panic(err)
 		}
-		PreReqEnd(ctx, cm.ReturnVal(respByte))
 		utility.DumpJson(resp, w)
+		if f, ok := w.(http.Flusher); ok {
+			f.Flush() // Force buffer to flush
+		}
+		if cb != nil {
+			cb()
+		}
 	}
 }
