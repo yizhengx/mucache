@@ -169,6 +169,7 @@ func SlowpokeInit() {
 		if env == "true" {
 			isTarget = true
 		} 
+		fmt.Printf("env=%s\n", env)
 	}
 	fmt.Printf("SLOWPOKE_IS_TARGET_SERVICE=%b\n", isTarget)
 
@@ -293,6 +294,7 @@ func SlowpokeCheck(serviceFuncName string) {
 		}
 	}
 
+	SlowpokeDelay()
 	// Process
 	CPUSpinTime(processingMicros)
 }
@@ -307,7 +309,7 @@ func SlowpokeDoDelay(delayToDo int64) {
 		os.Stdout.Sync()
 		return
 	}
-	fmt.Println("sleeping for: %d", delayToDo)
+	fmt.Printf("sleeping for: %d\n", delayToDo)
 	
 
 	// syscall.Syscall(syscall.SYS_SCHED_YIELD, 0, 0, 0) // Yield the CPU
@@ -338,9 +340,10 @@ func SlowpokeDelay() {
 	accumulatedDelay += delayNanos
 	reqcount += 1
 	if isTarget && int64(reqcount) > pokerBatchThreshold {
-		sync_guard.Unlock()
 		pauseReq := PauseReq{Phase: sleepPhase + 1}
+		sync_guard.Unlock()
 		handlePause(pauseReq)
+		return
 	}
 	sync_guard.Unlock()
 }

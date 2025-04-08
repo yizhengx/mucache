@@ -28,7 +28,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	if f, ok := w.(http.Flusher); ok {
 		f.Flush() // Force buffer to flush
 	}
-	slowpoke.SlowpokeDelay()
 }
 
 // func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -72,8 +71,8 @@ func main() {
 		fmt.Printf("no service number\n")
 		return
 	}
-	http.HandleFunc("/ep1", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep1, slowpoke.SlowpokeDelay))
-	http.HandleFunc("/ep2", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep2, slowpoke.SlowpokeDelay))
+	http.HandleFunc("/ep1", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep1))
+	http.HandleFunc("/ep2", wrappers.NonROWrapper[trivial.TrivialRequest, trivial.TrivialResponse](ep2))
 	http.HandleFunc("/home", homeHandler)
 	slowpoke.SlowpokeInit()
 	fmt.Println("Server started on :3000")

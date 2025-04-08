@@ -13,8 +13,8 @@ spec:
       targetPort: 3000
       name: http
     - protocol: TCP
-      port: 5050
-      targetPort: 5050
+      port: 5550
+      targetPort: 5550
       name: zmq1
     - protocol: TCP
       port: 5551
@@ -67,6 +67,15 @@ spec:
               value: "${SLOWPOKE_PROCESSING_MICROS_SERVICE2}"
           ports:
             - containerPort: 3000
-            - containerPort: 5050
+            - containerPort: 5550
             - containerPort: 5551
           imagePullPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - worker2

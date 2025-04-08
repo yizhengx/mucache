@@ -43,7 +43,7 @@ func handleRegister(regReq RegisterReq) {
 func requestEndpointRegister(serv string) {
 	exists := updateNeighbor(serv)
 	if !exists {
-		serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5050")
+		serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5550")
 		conn, err := net.Dial("tcp", serverAddr)
 		if err != nil {
 			panic(err)
@@ -67,11 +67,13 @@ func requestEndpointRegister(serv string) {
 }
 
 func requestPause(serv string, phase int) {
-	serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5050")
+	serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5550")
 	conn, err := net.Dial("tcp", serverAddr)
 	if err != nil {
 		panic("dial")
 	}
+	tcpConn, _ := conn.(*net.TCPConn)
+	tcpConn.SetNoDelay(true)
 	defer conn.Close()
 	pauseReq := PauseReq{Phase: phase}
 	pauseReqJson, err := json.Marshal(pauseReq)
@@ -94,12 +96,13 @@ func handlePause(pauseReq PauseReq) {
 	var delayToDo int64
 	sync_guard.Lock()
 	p := pauseReq.Phase
-	if p < sleepPhase {
+	if p > sleepPhase {
 		sleepPhase = p
 		delayToDo = accumulatedDelay
 		accumulatedDelay = 0
 		reqcount = 0
 		seen = false
+		fmt.Printf("Here! %d\n", p)
 	}
 	sync_guard.Unlock()
 	if !seen {
@@ -107,6 +110,7 @@ func handlePause(pauseReq PauseReq) {
 		defer neighborsLock.RUnlock()
 		var wg sync.WaitGroup
 		for neighbor := range neighbors {
+			wg.Add(1)
 			go func() {
 				defer wg.Done()
 				requestPause(neighbor, p)
@@ -162,12 +166,12 @@ func handleConnection(conn net.Conn) {
 }
 
 func startControlServer() {
-	listener, err := net.Listen("tcp", ":5050")
+	listener, err := net.Listen("tcp", ":5550")
 	if err != nil {
 		panic(err)
 	}
 	defer listener.Close()
-	fmt.Println("TCP JSON server listening on :5050")
+	fmt.Println("TCP JSON server listening on :5550")
 
 	for {
 		conn, err := listener.Accept()
