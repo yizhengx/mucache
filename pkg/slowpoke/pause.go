@@ -1,0 +1,180 @@
+package slowpoke
+
+import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"net"
+	"sync"
+)
+
+type Message struct {
+	Type    string          `json:"type"`
+	Payload json.RawMessage `json:"payload"` // Defer parsing
+}
+
+type RegisterReq struct {
+	Endpoint string		`json:"endpoint"`
+}
+
+type PauseReq struct {
+	Phase int		`json:"phase"`
+}
+
+func updateNeighbor(serv string) bool {
+	neighborsLock.RLock()
+	if _, exists := neighbors[serv]; exists {
+		neighborsLock.RUnlock()
+		return true
+	}
+	neighborsLock.RUnlock()
+	neighborsLock.Lock()
+	neighbors[serv] = struct{}{}
+	neighborsLock.Unlock()
+	fmt.Printf("Neighbor %s registered\n", serv)
+	return false
+}
+
+func handleRegister(regReq RegisterReq) {
+	serv := regReq.Endpoint
+	updateNeighbor(serv)
+}
+
+func requestEndpointRegister(serv string) {
+	exists := updateNeighbor(serv)
+	if !exists {
+		serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5050")
+		conn, err := net.Dial("tcp", serverAddr)
+		if err != nil {
+			panic(err)
+		}
+		defer conn.Close()
+		regReq := RegisterReq{Endpoint: servName}
+		regReqJson, err := json.Marshal(regReq)
+		if err != nil {
+			panic("marshal register request")
+		}
+		req := Message{Type: "register", Payload: regReqJson}
+		jsonData, err := json.Marshal(req)
+		if err != nil {
+			panic("marshal request")
+		}
+		jsonData = append(jsonData, '\n')
+		if _, err := conn.Write(jsonData); err != nil {
+			panic("Client send error")
+		}
+	}
+}
+
+func requestPause(serv string, phase int) {
+	serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5050")
+	conn, err := net.Dial("tcp", serverAddr)
+	if err != nil {
+		panic("dial")
+	}
+	defer conn.Close()
+	pauseReq := PauseReq{Phase: phase}
+	pauseReqJson, err := json.Marshal(pauseReq)
+	if err != nil {
+		panic("marshal register request")
+	}
+	req := Message{Type: "pause", Payload: pauseReqJson}
+	jsonData, err := json.Marshal(req)
+	if err != nil {
+		panic("marshal request")
+	}
+	jsonData = append(jsonData, '\n')
+	if _, err := conn.Write(jsonData); err != nil {
+		panic("Client send error")
+	}
+}
+
+func handlePause(pauseReq PauseReq) {
+	seen := true
+	var delayToDo int64
+	sync_guard.Lock()
+	p := pauseReq.Phase
+	if p < sleepPhase {
+		sleepPhase = p
+		delayToDo = accumulatedDelay
+		accumulatedDelay = 0
+		reqcount = 0
+		seen = false
+	}
+	sync_guard.Unlock()
+	if !seen {
+		neighborsLock.RLock()
+		defer neighborsLock.RUnlock()
+		var wg sync.WaitGroup
+		for neighbor := range neighbors {
+			go func() {
+				defer wg.Done()
+				requestPause(neighbor, p)
+			}()
+		}
+		wg.Wait()
+		SlowpokeDoDelay(delayToDo)
+	}
+}
+
+func handleConnection(conn net.Conn) {
+	defer conn.Close()
+	// fmt.Printf("New connection from %s\n", conn.RemoteAddr())
+
+	// Create a buffered reader
+	reader := bufio.NewReader(conn)
+
+	for {
+		// Read until newline (assuming JSON objects are newline-delimited)
+		data, err := reader.ReadBytes('\n')
+		if err != nil {
+			//fmt.Printf("Connection %s closed: %v\n", conn.RemoteAddr(), err)
+			return
+		}
+
+		// Parse JSON
+		var msg Message
+		if err := json.Unmarshal(data, &msg); err != nil {
+			fmt.Printf("Invalid JSON from %s: %v\n", conn.RemoteAddr(), err)
+			continue
+		}
+
+		switch msg.Type {
+		case "register":
+			var regReq RegisterReq
+			if err := json.Unmarshal(msg.Payload, &regReq); err != nil {
+				fmt.Printf("Invalid JSON from %s: %v\n", conn.RemoteAddr(), err)
+				continue
+			}
+			handleRegister(regReq)
+		case "pause":
+			var pauseReq PauseReq
+			if err := json.Unmarshal(msg.Payload, &pauseReq); err != nil {
+				fmt.Printf("Invalid JSON from %s: %v\n", conn.RemoteAddr(), err)
+				continue
+			}
+			handlePause(pauseReq)
+		default:
+			fmt.Printf("Invalid JSON from %s: %v\n", conn.RemoteAddr(), err)
+			continue
+		}
+	}
+}
+
+func startControlServer() {
+	listener, err := net.Listen("tcp", ":5050")
+	if err != nil {
+		panic(err)
+	}
+	defer listener.Close()
+	fmt.Println("TCP JSON server listening on :5050")
+
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			fmt.Printf("Accept error: %v\n", err)
+			continue
+		}
+		go handleConnection(conn)
+	}
+}

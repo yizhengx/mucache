@@ -147,7 +147,7 @@ func ROWrapper[ReqType interface{}, RespType interface{}](handler func(context.C
 	}
 }
 
-func NonROWrapper[ReqType interface{}, RespType interface{}](handler func(context.Context, *ReqType) *RespType, cb func()) func(http.ResponseWriter, *http.Request) {
+func NonROWrapper[ReqType interface{}, RespType interface{}](handler func(context.Context, *ReqType) *RespType) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx, input := SetupCtxFromHTTPReq(r, false)
 		var req ReqType
@@ -161,11 +161,5 @@ func NonROWrapper[ReqType interface{}, RespType interface{}](handler func(contex
 			panic(err)
 		}
 		utility.DumpJson(resp, w)
-		if f, ok := w.(http.Flusher); ok {
-			f.Flush() // Force buffer to flush
-		}
-		if cb != nil {
-			cb()
-		}
 	}
 }

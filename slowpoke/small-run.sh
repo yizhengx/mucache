@@ -108,11 +108,11 @@ export SLOWPOKE_PROCESSING_MICROS_SERVICE20=95
 # One is service0-100 processing time, 300 delay?
 # Another is service1-500 processing time, 100 delay?
 
-export SLOWPOKE_POKER_BATCH_THRESHOLD=30000000
+export SLOWPOKE_POKER_BATCH_THRESHOLD=300
 
 
 
-bash run.sh longchain x 1 1 10000
+bash run.sh mutex x 1 1 10000
 # DIR=/home/ubuntu/mucache/slowpoke/synthetic/two-services/interference-microbenchmark
 
 # for threadshold in 10000000 20000000 30000000 40000000 50000000 60000000

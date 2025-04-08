@@ -20,7 +20,7 @@
 # Stage 1: Build Stage
 FROM golang:alpine AS builder
 
-ARG BENCHMARK="mutex"
+ARG BENCHMARK="$BENCHMARK"
 
 RUN echo "Building image for ${BENCHMARK} benchmark"
 
@@ -51,7 +51,7 @@ RUN mkdir -p /app/bin && \
         fi \
     done
 
-ENV APP_NAME=$APP_NAME
+ENV APP_NAME=$BENCHMARK
 ENV APP_NAMESPACE=$APP_NAMESPACE
 ENV NODE_IDX=$NODE_IDX
 ENV CM_ENABLED=$CM_ENABLED

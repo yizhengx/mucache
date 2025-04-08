@@ -13,8 +13,8 @@ spec:
       targetPort: 3000
       name: http
     - protocol: TCP
-      port: 5550
-      targetPort: 5550
+      port: 5050
+      targetPort: 5050
       name: zmq1
     - protocol: TCP
       port: 5551
@@ -57,6 +57,10 @@ spec:
               value: "false"
             - name: EXPIRATION_TTL
               value: "0"
+            - name: SLOWPOKE_IS_TARGET_SERVICE
+              value: "true"
+            - name: SLOWPOKE_SERV_NAME
+              value: "service1"
             - name: SLOWPOKE_DELAY_MICROS
               value: "${SLOWPOKE_DELAY_MICROS_SERVICE1}"
             - name: SLOWPOKE_PRERUN
@@ -65,15 +69,6 @@ spec:
               value: "${SLOWPOKE_PROCESSING_MICROS_SERVICE1}"
           ports:
             - containerPort: 3000
-            - containerPort: 5550
+            - containerPort: 5050
             - containerPort: 5551
           imagePullPolicy: Always
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - worker1

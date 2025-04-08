@@ -14,6 +14,7 @@ import (
 	"github.com/eniac/mucache/pkg/common"
 	"github.com/eniac/mucache/pkg/utility"
 	"sync"
+	"strings"
 	"runtime"
 	"sync/atomic"
 	"io"
@@ -23,15 +24,22 @@ import (
 const printIntervalMillis = 30*1000
 // {"thread_id" :{"requestName": counter}}
 var (
-	// requestCounters map[int]map[string]int
+	processingMicros int
+	pokerBatchThreshold int64
 	delayNanos int64
 	prerun bool
+	servName string
+	neighbors map[string]struct{} = make(map[string]struct{})
+	neighborsLock sync.RWMutex
+	isTarget bool
+	sleepPhase int
+	sleepPhaseLock sync.Mutex
+	// requestCounters map[int]map[string]int
+
 	requestCounters sync.Map
 	accumulatedDelay int64 = 0
-	sync_guard sync.RWMutex
-	processingMicros int
+	sync_guard sync.Mutex
 	sleepSurplus int64 = 0
-	pokerBatchThreshold int64
 	reqcount = 0
 
 	pipebuf = make([]byte, 8)
@@ -42,7 +50,7 @@ var (
 
 func min(a, b int64) int64 {
 	if a < b {
-			return a
+		return a
 	}
 	return b
 }
@@ -145,11 +153,24 @@ func SlowpokeInit() {
 		}
 		fmt.Printf("SLOWPOKE_PRERUN=%t\n", prerun)
 	}
-	pokerBatchThreshold = 20000000
+	if env, ok := os.LookupEnv("SLOWPOKE_SERV_NAME"); ok {
+		servName = strings.TrimSpace(env)
+		fmt.Printf("SLOWPOKE_SERV_NAME=%s\n", servName)
+	}
+	
+	pokerBatchThreshold = 100
 	if env, ok := os.LookupEnv("SLOWPOKE_POKER_BATCH_THRESHOLD"); ok {
 		fmt.Sscanf(env, "%d", &pokerBatchThreshold)
 		fmt.Printf("SLOWPOKE_POKER_BATCH_THRESHOLD=%d\n", pokerBatchThreshold)
 	}
+
+	isTarget = false
+	if env, ok := os.LookupEnv("SLOWPOKE_IS_TARGET_SERVICE"); ok {
+		if env == "true" {
+			isTarget = true
+		} 
+	}
+	fmt.Printf("SLOWPOKE_IS_TARGET_SERVICE=%b\n", isTarget)
 
 	var fifo_path string;
 	var fifo_recover_path string;
@@ -191,6 +212,8 @@ func SlowpokeInit() {
 		os.Stdout.Sync()
 		_, err = recover_pipefile.Read(pipe_recv_buf);
 	}
+
+	go startControlServer()
 
 	if !prerun {
 		return
@@ -264,7 +287,7 @@ func SlowpokeCheck(serviceFuncName string) {
 			if requestCounters.CompareAndSwap(serviceFuncName, current, current+1) {
 				break // Exit loop when successful
 			}
-		
+			
 			// Retry in case of failure (another goroutine modified the value)
 			counter, _ = requestCounters.Load(serviceFuncName)
 		}
@@ -274,58 +297,58 @@ func SlowpokeCheck(serviceFuncName string) {
 	CPUSpinTime(processingMicros)
 }
 
+func SlowpokeDoDelay(delayToDo int64) {
+	// start := time.Now()
+	sync_guard.Lock()
+	binary.LittleEndian.PutUint64(pipebuf, uint64(delayToDo))
+	_, err := pipefile.Write(pipebuf);
+	if err != nil {
+		fmt.Println("Error writing to pipe:", err)
+		os.Stdout.Sync()
+		return
+	}
+	fmt.Println("sleeping for: %d", delayToDo)
+	
+
+	// syscall.Syscall(syscall.SYS_SCHED_YIELD, 0, 0, 0) // Yield the CPU
+
+	// elapsed := time.Since(start)
+	// start = start.Add(elapsed)
+	// accumulatedDelay -= elapsed.Nanoseconds()
+	// for accumulatedDelay > 0 {
+	//       time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
+	//       elapsed = time.Since(start)
+	//       start = start.Add(elapsed)
+	//       accumulatedDelay -= elapsed.Nanoseconds()
+	// }
+
+	// time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
+	_, err = recover_pipefile.Read(pipe_recv_buf);
+	if err != nil {
+		fmt.Println("Error reading from pipe:", err)
+		os.Stdout.Sync()
+		panic("pipe")
+	}
+	sync_guard.Unlock()
+}
+
 func SlowpokeDelay() {
 	// Delay
 	sync_guard.Lock()
 	accumulatedDelay += delayNanos
 	reqcount += 1
-	// if accumulatedDelay > pokerBatchThreshold {
-	if reqcount >= 100 {
-		// start := time.Now()
-		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
-		_, err := pipefile.Write(pipebuf);
-		if err != nil {
-			fmt.Println("Error writing to pipe:", err)
-			os.Stdout.Sync()
-			return
-		}
-
-		// syscall.Syscall(syscall.SYS_SCHED_YIELD, 0, 0, 0) // Yield the CPU
-
-		// elapsed := time.Since(start)
-		// start = start.Add(elapsed)
-		// accumulatedDelay -= elapsed.Nanoseconds()
-		// for accumulatedDelay > 0 {
-		//       time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
-		//       elapsed = time.Since(start)
-		//       start = start.Add(elapsed)
-		//       accumulatedDelay -= elapsed.Nanoseconds()
-		// }
-
-		// time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
-		_, err = recover_pipefile.Read(pipe_recv_buf);
-		if err != nil {
-			fmt.Println("Error reading from pipe:", err)
-			os.Stdout.Sync()
-			return
-		}
-		accumulatedDelay = 0
-		reqcount = 0
+	if isTarget && int64(reqcount) > pokerBatchThreshold {
+		sync_guard.Unlock()
+		pauseReq := PauseReq{Phase: sleepPhase + 1}
+		handlePause(pauseReq)
 	}
 	sync_guard.Unlock()
-}
-
-func Barrier1() {
-     sync_guard.RLock()
-}
-
-func Barrier2() {
-     sync_guard.RUnlock()
 }
 
 func Invoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {
 	// sync_guard.RLock()
 	// sync_guard.RUnlock()
+	requestEndpointRegister(app)
 	buf, err := json.Marshal(input)
 	if err != nil {
 		panic(err)
@@ -353,15 +376,15 @@ func performRequestSynth(ctx context.Context, req *http.Request, res *string, ap
 	utility.Assert(resp.StatusCode == http.StatusOK)
 	defer resp.Body.Close()
 	bodyBytes, err := io.ReadAll(resp.Body)
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 	*res = string(bodyBytes)
 }
 
 func InvokeSynthtic(ctx context.Context, app string, method string, input interface{}) string {
 	// sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RUnlock()
 	buf, err := json.Marshal(input)
 	if err != nil {
 		panic(err)
@@ -375,10 +398,10 @@ func InvokeSynthtic(ctx context.Context, app string, method string, input interf
 		panic(err)
 	}
 	// sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RUnlock()
 	performRequestSynth(ctx, req, &res, app, method, buf)
 	// sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RUnlock()
 	return res
 }
 
@@ -387,14 +410,14 @@ type SlowpokeListener struct {
 }
 
 func (l *SlowpokeListener) Accept() (net.Conn, error) {
-    // sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RLock()
+	// sync_guard.RUnlock()
 	conn, err := l.Listener.Accept()
 	if err != nil {
 		return nil, err
 	}
-    // sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RLock()
+	// sync_guard.RUnlock()
 	return &tracedConn{Conn: conn}, nil
 }
 
@@ -403,20 +426,20 @@ type tracedConn struct {
 }
 
 func (c *tracedConn) Read(b []byte) (n int, err error) {
-    // sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RLock()
+	// sync_guard.RUnlock()
 	n, err = c.Conn.Read(b)
-    // sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RLock()
+	// sync_guard.RUnlock()
 	return
 }
 
 func (c *tracedConn) Write(b []byte) (n int, err error) {
-    // sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RLock()
+	// sync_guard.RUnlock()
 	n, err = c.Conn.Write(b)
-    // sync_guard.RLock()
-    // sync_guard.RUnlock()
+	// sync_guard.RLock()
+	// sync_guard.RUnlock()
 	return
 }
 
