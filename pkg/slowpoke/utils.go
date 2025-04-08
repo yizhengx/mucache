@@ -29,7 +29,7 @@ var (
 	delayNanos int64
 	prerun bool
 	servName string
-	neighbors map[string]struct{} = make(map[string]struct{})
+	neighbors map[string]net.Conn = make(map[string]net.Conn)
 	neighborsLock sync.RWMutex
 	isTarget bool
 	sleepPhase int

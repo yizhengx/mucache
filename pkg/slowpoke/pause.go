@@ -29,7 +29,16 @@ func updateNeighbor(serv string) bool {
 	}
 	neighborsLock.RUnlock()
 	neighborsLock.Lock()
-	neighbors[serv] = struct{}{}
+	if _, exists := neighbors[serv]; exists {
+		neighborsLock.Unlock()
+		return true
+	}
+	serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5550")
+	conn, err := net.Dial("tcp", serverAddr)
+	if err != nil {
+		panic(err)
+	}
+	neighbors[serv] = conn
 	neighborsLock.Unlock()
 	fmt.Printf("Neighbor %s registered\n", serv)
 	return false
@@ -43,12 +52,9 @@ func handleRegister(regReq RegisterReq) {
 func requestEndpointRegister(serv string) {
 	exists := updateNeighbor(serv)
 	if !exists {
-		serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5550")
-		conn, err := net.Dial("tcp", serverAddr)
-		if err != nil {
-			panic(err)
-		}
-		defer conn.Close()
+		neighborsLock.RLock()
+		conn := neighbors[serv]
+		neighborsLock.RUnlock()
 		regReq := RegisterReq{Endpoint: servName}
 		regReqJson, err := json.Marshal(regReq)
 		if err != nil {
@@ -67,14 +73,9 @@ func requestEndpointRegister(serv string) {
 }
 
 func requestPause(serv string, phase int) {
-	serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5550")
-	conn, err := net.Dial("tcp", serverAddr)
-	if err != nil {
-		panic("dial")
-	}
-	tcpConn, _ := conn.(*net.TCPConn)
-	tcpConn.SetNoDelay(true)
-	defer conn.Close()
+	neighborsLock.RLock()
+	conn := neighbors[serv]
+	neighborsLock.RUnlock()
 	pauseReq := PauseReq{Phase: phase}
 	pauseReqJson, err := json.Marshal(pauseReq)
 	if err != nil {
@@ -103,6 +104,8 @@ func handlePause(pauseReq PauseReq) {
 		reqcount = 0
 		seen = false
 		fmt.Printf("Here! %d\n", p)
+	} else {
+		fmt.Printf("Skip! %d\n", p)
 	}
 	sync_guard.Unlock()
 	if !seen {
@@ -111,10 +114,11 @@ func handlePause(pauseReq PauseReq) {
 		var wg sync.WaitGroup
 		for neighbor := range neighbors {
 			wg.Add(1)
-			go func() {
+			go func(neighbor string, n int) {
 				defer wg.Done()
-				requestPause(neighbor, p)
-			}()
+				fmt.Printf("sending! %d\n", n)
+				requestPause(neighbor, n)
+			}(neighbor, p)
 		}
 		wg.Wait()
 		SlowpokeDoDelay(delayToDo)
