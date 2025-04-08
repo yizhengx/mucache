@@ -25,9 +25,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		reply = resp.A
 	} 
 	fmt.Fprintf(w, reply)
-	if f, ok := w.(http.Flusher); ok {
-		f.Flush() // Force buffer to flush
-	}
 }
 
 // func homeHandler(w http.ResponseWriter, r *http.Request) {
