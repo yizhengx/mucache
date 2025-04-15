@@ -1,0 +1,79 @@
+[run.sh] Running benchmark longchain with request x, thread 8, conn 64, duration 60
+[run.sh] Deleting all services
+service "service0" deleted
+deployment.apps "service0" deleted
+service "service1" deleted
+deployment.apps "service1" deleted
+service "service2" deleted
+deployment.apps "service2" deleted
+service "service3" deleted
+deployment.apps "service3" deleted
+service "service4" deleted
+deployment.apps "service4" deleted
+service "service5" deleted
+deployment.apps "service5" deleted
+service "service6" deleted
+deployment.apps "service6" deleted
+service "service7" deleted
+deployment.apps "service7" deleted
+service "service8" deleted
+deployment.apps "service8" deleted
+deployment.apps "ubuntu-client" deleted
+[run.sh] Waiting for all pods to be deleted
+[run.sh] Deploying all services
+service/service0 created
+deployment.apps/service0 created
+service/service1 created
+deployment.apps/service1 created
+service/service2 created
+deployment.apps/service2 created
+service/service3 created
+deployment.apps/service3 created
+service/service4 created
+deployment.apps/service4 created
+service/service5 created
+deployment.apps/service5 created
+service/service6 created
+deployment.apps/service6 created
+service/service7 created
+deployment.apps/service7 created
+service/service8 created
+deployment.apps/service8 created
+[run.sh] Client pod not found, deploying client
+deployment.apps/ubuntu-client created
+[run.sh] Waiting for all pods to be running
+[run.sh] All pods are running
+[run.sh] Starting the rust proxy first for longchain
+[run.sh] Running warmup test
+[run.sh] /wrk/wrk -t8 -c64 -d3s -L http://service0:80/
+
+[run.sh] Speed is , duration is 
+[run.sh] Fix the request number.
+[run.sh] Running the actual test
+[run.sh] /wrk/wrk --timeout 20s -t8 -c64 -d20s -L http://service2:80/home
+Running 20s test @ http://service2:80/home
+  8 threads and 64 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    53.13ms   28.45ms 129.87ms   57.65%
+    Req/Sec   150.80     31.87   250.00     73.62%
+  Latency Distribution
+     50%   64.10ms
+     75%   76.29ms
+     90%   84.60ms
+     99%   98.47ms
+  24050 requests in 20.02s, 2.71MB read
+Requests/sec:   1201.21
+Transfer/sec:    138.42KB
+[run.sh] Checking the resource usage
+NAME                             CPU(cores)   MEMORY(bytes)   
+service0-7d94c496f8-bsm76        10m          8Mi             
+service1-5b89699867-tn4q6        12m          11Mi            
+service2-58d5644878-wpzsg        156m         12Mi            
+service3-79fb8c8bfc-ksjp5        0m           2Mi             
+service4-5698bc9d6-crgzj         0m           2Mi             
+service5-8f78d7dcf-2zmrt         0m           2Mi             
+service6-66d8694968-2xbff        0m           2Mi             
+service7-5dd547b89-8h4mc         0m           2Mi             
+service8-747f9db568-7zkf5        0m           2Mi             
+ubuntu-client-76886f6bbd-pl526   5m           3Mi             
+[run.sh] Test finished with status 0
