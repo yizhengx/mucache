@@ -40,7 +40,7 @@ var (
 	accumulatedDelay int64 = 0
 	sync_guard sync.Mutex
 	sleepSurplus int64 = 0
-	reqcount = 0
+	reqcount int64 = 0
 
 	pipebuf = make([]byte, 8)
 	pipefile *os.File
@@ -336,16 +336,13 @@ func SlowpokeDoDelay(delayToDo int64) {
 
 func SlowpokeDelay() {
 	// Delay
-	sync_guard.Lock()
-	accumulatedDelay += delayNanos
-	reqcount += 1
-	if isTarget && int64(reqcount) > pokerBatchThreshold {
-		pauseReq := PauseReq{Phase: sleepPhase + 1}
-		sync_guard.Unlock()
+	atomic.AddInt64(&accumulatedDelay, delayNanos)
+	atomic.AddInt64(&reqcount, 1)
+	if isTarget && reqcount > pokerBatchThreshold {
+		pauseReq := PauseReq{Phase: sleepPhase}
 		handlePause(pauseReq)
 		return
 	}
-	sync_guard.Unlock()
 }
 
 func Invoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {
