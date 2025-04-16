@@ -348,7 +348,7 @@ func SlowpokeDelay() {
 func Invoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {
 	// sync_guard.RLock()
 	// sync_guard.RUnlock()
-	requestEndpointRegister(app)
+	// requestEndpointRegister(app)
 	buf, err := json.Marshal(input)
 	if err != nil {
 		panic(err)

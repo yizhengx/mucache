@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"time"
 	"sync/atomic"
 )
 
@@ -21,7 +22,8 @@ type PauseReq struct {
 	Phase int		`json:"phase"`
 }
 
-func updateNeighbor(serv string) bool {
+func UpdateNeighbor(serv string) bool {
+	fmt.Printf("Start updating neighbor %s\n", serv)
 	neighborsLock.RLock()
 	if _, exists := neighbors[serv]; exists {
 		neighborsLock.RUnlock()
@@ -33,12 +35,22 @@ func updateNeighbor(serv string) bool {
 		neighborsLock.Unlock()
 		return true
 	}
+	fmt.Printf("Mid updating neighbor %s\n", serv)
 	serverAddr := fmt.Sprintf("%s.%s.svc.cluster.local:%s", serv, "default", "5550")
-	conn, err := net.Dial("tcp", serverAddr)
-	if err != nil {
-		panic(err)
+	maxRetries := 10
+	for i := 0; i < maxRetries; i++ {
+		conn, err := net.DialTimeout("tcp", serverAddr, 1*time.Second)
+		if err == nil {
+			neighbors[serv] = conn
+			break // Success!
+		}
+		fmt.Printf("Attempt %d failed: %v\n", i+1, err)
+		if i < maxRetries-1 {
+			time.Sleep(1)
+		} else {
+			panic(err)
+		}
 	}
-	neighbors[serv] = conn
 	neighborsLock.Unlock()
 	fmt.Printf("Neighbor %s registered\n", serv)
 	return false
@@ -46,11 +58,11 @@ func updateNeighbor(serv string) bool {
 
 func handleRegister(regReq RegisterReq) {
 	serv := regReq.Endpoint
-	updateNeighbor(serv)
+	UpdateNeighbor(serv)
 }
 
 func requestEndpointRegister(serv string) {
-	exists := updateNeighbor(serv)
+	exists := UpdateNeighbor(serv)
 	if !exists {
 		neighborsLock.RLock()
 		conn := neighbors[serv]
@@ -110,7 +122,9 @@ func handlePause(pauseReq PauseReq) {
 		for neighbor := range neighbors {
 			requestPause(neighbor, p)
 		}
-		SlowpokeDoDelay(delayToDo)
+		if delayToDo > 0 {
+			SlowpokeDoDelay(delayToDo)
+		}
 	}
 }
 
