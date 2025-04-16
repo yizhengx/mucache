@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"sync/atomic"
 )
 
 type Message struct {
@@ -96,11 +97,10 @@ func handlePause(pauseReq PauseReq) {
 	var delayToDo int64
 	sync_guard.Lock()
 	p := pauseReq.Phase
-	if p > sleepPhase {
-		sleepPhase = p
-		delayToDo = accumulatedDelay
-		accumulatedDelay = 0
-		reqcount = 0
+	if p >= sleepPhase {
+		sleepPhase = p + 1
+		delayToDo = atomic.SwapInt64(&accumulatedDelay, 0)
+		atomic.AddInt64(&reqcount, -pokerBatchThreshold)
 		seen = false
 	}
 	sync_guard.Unlock()
