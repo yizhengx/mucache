@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: config-service25
+    labels:
+        name: config-service25
+    namespace: default
+data:
+    conf.json: '{"processes":10,"logging":false,"protocol":"http","endpoints":[{"name":"endpoint1","execution_mode":"sequential","cpu_complexity":{"execution_time":${PROCESSING_TIME_SERVICE25},"threads":1}}]}'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: service25
+    namespace: default
+    labels: {}
+spec:
+    selector:
+        matchLabels:
+            app: service25
+            version: ""
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: service25
+                version: ""
+            annotations: {}
+        spec:
+            nodeName: worker9
+            containers:
+                - name: app
+                  image: yizhengx/mucache:synthetic-pokerpp-0maxconn
+                  imagePullPolicy: Always
+                  env:
+                    - name: APP_NAME
+                      value: service
+                    - name: GOMEMLIMIT
+                      value: "1024000000"
+                    - name: SLOWPOKE_DELAY_MICROS
+                      value: "${SLOWPOKE_DELAY_MICROS_SERVICE25}"
+                    - name: SLOWPOKE_PRERUN
+                      value: "${SLOWPOKE_PRERUN}"
+                    - name: SLOWPOKE_POKER_BATCH_THRESHOLD
+                      value: "${SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE25}"
+                    - name: SLOWPOKE_SERV_NAME
+                      value: service25
+                    - name: SLOWPOKE_IS_TARGET_SERVICE
+                      value: "${SLOWPOKE_IS_TARGET_SERVICE_SERVICE25}"
+                    - name: CONF
+                      value: /usr/src/emulator/config/conf.json
+                  ports:
+                    - containerPort: 5000
+                    - containerPort: 5550
+                  volumeMounts:
+                    - mountPath: /usr/src/emulator/config
+                      name: config-data-volume
+                  readinessProbe:
+                    httpGet:
+                        path: /
+                        port: 5000
+                    initialDelaySeconds: 2
+                    periodSeconds: 1
+            volumes:
+                - name: config-data-volume
+                  configMap:
+                    name: config-service25
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: service25
+    namespace: default
+    labels: {}
+    annotations:
+        http: /
+spec:
+    selector:
+        app: service25
+    ports:
+        - name: http
+          port: 80
+          targetPort: 5000
+        - name: pokerpp
+          port: 5550
+          targetPort: 5550
+          protocol: TCP

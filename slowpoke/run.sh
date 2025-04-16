@@ -101,7 +101,7 @@ warmup_and_speed() {
     if [[ -z $5 ]]; then
         script=""
     fi
-    output=$(kubectl exec $client -- /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L $script $host)
+    output=$(kubectl exec $client -- /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L $script $host)
     echo $output
 }
 
@@ -118,14 +118,14 @@ run_test() {
     echo "[run.sh] Running warmup test" 
     if [[ $benchmark == "boutique" ]]; then
        # run the load generator
-        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80"
-        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80)
+        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80"
+        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L -s /wrk/scripts/online-boutique/${request}.lua http://frontend:80)
     elif [[ $benchmark == "synthetic" ]]; then
-        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L http://service0:80/endpoint1"
-        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L http://service0:80/endpoint1)
+        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L http://service0:80/endpoint1"
+        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L http://service0:80/endpoint1)
     else 
-        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L http://localhost:3000"
-        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} --timeout 3s -d3s -L http://localhost:3000)
+        echo "[run.sh] /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L http://localhost:3000"
+        output=$(kubectl exec $ubuntu_client -- /wrk/wrk -t${thread} -c${conn} --timeout 10s -d10s -L http://localhost:3000)
     fi
     echo "$output"
 
@@ -215,7 +215,8 @@ done
 echo "[run.sh] All pods are running"
 
 
-check_connectivity_all
+# check_connectivity_all
+sleep 20
 
 
 if [[ $benchmark != "synthetic" ]]; then
