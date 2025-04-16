@@ -6,7 +6,7 @@ metadata:
         name: config-service0
     namespace: default
 data:
-    conf.json: '{"processes":10,"logging":false,"protocol":"http","endpoints":[{"name":"endpoint1","execution_mode":"sequential","cpu_complexity":{"execution_time":${PROCESSING_TIME_SERVICE0},"threads":1},"network_complexity":{"forward_requests":"synchronous","response_payload_size":256,"called_services":[{"service":"service1","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service2","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service3","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service4","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service5","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service6","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0}]}}]}'
+    conf.json: '{"processes":10,"logging":false,"protocol":"http","endpoints":[{"name":"endpoint1","execution_mode":"sequential","cpu_complexity":{"execution_time":${PROCESSING_TIME_SERVICE0},"threads":1},"network_complexity":{"forward_requests":"asynchronous","response_payload_size":256,"called_services":[{"service":"service1","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service2","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service3","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service4","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service5","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0},{"service":"service6","port":80,"endpoint":"endpoint1","protocol":"http","traffic_forward_ratio":1,"request_payload_size":512,"probability":0}]}}]}'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -27,7 +27,7 @@ spec:
                 version: ""
             annotations: {}
         spec:
-            nodeName: worker0
+            nodeName: worker43
             containers:
                 - name: app
                   image: yizhengx/mucache:synthetic-pokerpp-0maxconn

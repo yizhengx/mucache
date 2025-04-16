@@ -175,20 +175,18 @@ def get_baseline_service_processing_time_synthetic(target, request, random_seed)
     topology = "-".join(request.split("-")[:2])
     num = len(service_reuse[topology])
     random.seed(random_seed)
-    random_numbers = [random.gauss(200, 100) for i in range(num)]
+    random_numbers = [random.gauss(500, 300) for i in range(num)]
     random_numbers = [abs(r) for r in random_numbers]   # just in case
     random_numbers.sort()
     print(f"[config.py] Random numbers for execution time: {random_numbers}")
 
     processing_time = {}
-    processing_time[target] = round(3 * random_numbers.pop(-1), 2)
+    processing_time[target] = round(2 * random_numbers.pop(-1), 2)
     for i in range(num):
-        # if f"service{i}" == target:
-        #     continue
-        # else:
-        #     processing_time[f"service{i}"] = round(random_numbers.pop(-1)/service_reuse[topology][i], 2)
-        processing_time[f"service{i}"]  = 10
-    processing_time[target] = 600
+        if f"service{i}" == target:
+            continue
+        else:
+            processing_time[f"service{i}"] = round(random_numbers.pop(-1)/service_reuse[topology][i], 2)
     
     # for i in range(num):
     #     if i in leaf_nodes[topology] and f"service{i}" == target:

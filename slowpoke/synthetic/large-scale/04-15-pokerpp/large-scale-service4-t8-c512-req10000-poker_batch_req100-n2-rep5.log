@@ -1,0 +1,1120 @@
+[config.py] Random numbers for execution time: [95.50530779015992, 153.643553412284, 233.4528081836565, 235.22215161316376, 266.8258904836173, 270.61139205875855, 312.7289808438226, 320.0737000756527, 330.94084387878866, 379.7925643397259, 394.46360149363056, 408.43669807283015, 437.71916187740476, 449.4696642233538, 451.3517510061564, 507.63267132474374, 545.0653804674347, 559.5673758512326, 585.7766674845966, 586.5241005768077, 593.6153138558819, 604.9259024089295, 612.1006413099824, 622.5132695924556, 634.8451070287676, 635.9555152905739, 648.1435394027396, 710.2974980948986, 717.2485133235043, 738.9187545948298, 763.7882776362264, 790.5188774377734, 813.3895014888511, 827.4584469118475, 827.6302104855104, 844.4953574866163, 916.6289145442998, 923.9658252420797, 1081.9788421823544, 1125.670340325942, 1127.131160316148, 1148.2320920874777, 1174.8727759606743]
+benchmark                        : synthetic
+num_threads                      : 8
+num_conns                        : 512
+target_service                   : service4
+request_type                     : large-scale
+repetitions                      : 5
+target_num_exp                   : 2
+pre_run                          : False
+num_req                          : 10000
+groundtruths                     : []
+slowdowns                        : []
+predicteds                       : []
+errs                             : []
+poker_batch_req                  : 100
+client_cpu_quota                 : 2
+random_seed                      : 29796
+request_ratio                    : {'service0': 1, 'service1': 1, 'service2': 1, 'service3': 1, 'service4': 1, 'service5': 1, 'service6': 1, 'service7': 1, 'service8': 1, 'service9': 1, 'service10': 1, 'service11': 1, 'service12': 1, 'service13': 1, 'service14': 1, 'service15': 1, 'service16': 1, 'service17': 1, 'service18': 1, 'service19': 1, 'service20': 1, 'service21': 1, 'service22': 1, 'service23': 1, 'service24': 1, 'service25': 1, 'service26': 1, 'service27': 1, 'service28': 1, 'service29': 1, 'service30': 1, 'service31': 1, 'service32': 1, 'service33': 1, 'service34': 1, 'service35': 1, 'service36': 1, 'service37': 1, 'service38': 1, 'service39': 1, 'service40': 1, 'service41': 1, 'service42': 1}
+baseline_service_processing_time : {'service4': 2349.75, 'service0': 1148.23, 'service1': 1127.13, 'service2': 1125.67, 'service3': 1081.98, 'service5': 923.97, 'service6': 916.63, 'service7': 844.5, 'service8': 827.63, 'service9': 827.46, 'service10': 813.39, 'service11': 790.52, 'service12': 763.79, 'service13': 738.92, 'service14': 717.25, 'service15': 710.3, 'service16': 648.14, 'service17': 635.96, 'service18': 634.85, 'service19': 622.51, 'service20': 612.1, 'service21': 604.93, 'service22': 593.62, 'service23': 586.52, 'service24': 585.78, 'service25': 559.57, 'service26': 545.07, 'service27': 507.63, 'service28': 451.35, 'service29': 449.47, 'service30': 437.72, 'service31': 408.44, 'service32': 394.46, 'service33': 379.79, 'service34': 330.94, 'service35': 320.07, 'service36': 312.73, 'service37': 270.61, 'service38': 266.83, 'service39': 235.22, 'service40': 233.45, 'service41': 153.64, 'service42': 95.51}
+cpu_quota                        : {'service0': 2, 'service1': 2, 'service2': 2, 'service3': 2, 'service4': 2, 'service5': 2, 'service6': 2, 'service7': 2, 'service8': 2, 'service9': 2, 'service10': 2, 'service11': 2, 'service12': 2, 'service13': 2, 'service14': 2, 'service15': 2, 'service16': 2, 'service17': 2, 'service18': 2, 'service19': 2, 'service20': 2, 'service21': 2, 'service22': 2, 'service23': 2, 'service24': 2, 'service25': 2, 'service26': 2, 'service27': 2, 'service28': 2, 'service29': 2, 'service30': 2, 'service31': 2, 'service32': 2, 'service33': 2, 'service34': 2, 'service35': 2, 'service36': 2, 'service37': 2, 'service38': 2, 'service39': 2, 'service40': 2, 'service41': 2, 'service42': 2}
+target_processing_time_range     : [0, 2349.75]
+baseline_throughputs             : []
+poker_batch                      : 20000000
+[test.py] Starting experiment...
+[test.py] >>>>>>>>>>>>>>>>>>>>>>>>>>>>> Running experiment 0...
+[test.py] Actual processing time range: [0, 1174]
+[test.py] Running baseline experiment
+    [exp] Running (pre_run: False) workload synthetic/large-scale request with the following configuration: {'CLIENT_CPU_QUOTA': '2', 'SLOWPOKE_POKER_BATCH_THRESHOLD': '20000000', 'PROCESSING_TIME_SERVICE4': '0.00234975', 'PROCESSING_TIME_SERVICE0': '0.00114823', 'PROCESSING_TIME_SERVICE1': '0.00112713', 'PROCESSING_TIME_SERVICE2': '0.00112567', 'PROCESSING_TIME_SERVICE3': '0.00108198', 'PROCESSING_TIME_SERVICE5': '0.00092397', 'PROCESSING_TIME_SERVICE6': '0.00091663', 'PROCESSING_TIME_SERVICE7': '0.0008445', 'PROCESSING_TIME_SERVICE8': '0.00082763', 'PROCESSING_TIME_SERVICE9': '0.00082746', 'PROCESSING_TIME_SERVICE10': '0.00081339', 'PROCESSING_TIME_SERVICE11': '0.00079052', 'PROCESSING_TIME_SERVICE12': '0.00076379', 'PROCESSING_TIME_SERVICE13': '0.00073892', 'PROCESSING_TIME_SERVICE14': '0.00071725', 'PROCESSING_TIME_SERVICE15': '0.0007103', 'PROCESSING_TIME_SERVICE16': '0.00064814', 'PROCESSING_TIME_SERVICE17': '0.00063596', 'PROCESSING_TIME_SERVICE18': '0.00063485', 'PROCESSING_TIME_SERVICE19': '0.00062251', 'PROCESSING_TIME_SERVICE20': '0.0006121', 'PROCESSING_TIME_SERVICE21': '0.00060493', 'PROCESSING_TIME_SERVICE22': '0.00059362', 'PROCESSING_TIME_SERVICE23': '0.00058652', 'PROCESSING_TIME_SERVICE24': '0.00058578', 'PROCESSING_TIME_SERVICE25': '0.00055957', 'PROCESSING_TIME_SERVICE26': '0.00054507', 'PROCESSING_TIME_SERVICE27': '0.00050763', 'PROCESSING_TIME_SERVICE28': '0.00045135', 'PROCESSING_TIME_SERVICE29': '0.00044947', 'PROCESSING_TIME_SERVICE30': '0.00043772', 'PROCESSING_TIME_SERVICE31': '0.00040844', 'PROCESSING_TIME_SERVICE32': '0.00039446', 'PROCESSING_TIME_SERVICE33': '0.00037979', 'PROCESSING_TIME_SERVICE34': '0.00033094', 'PROCESSING_TIME_SERVICE35': '0.00032007', 'PROCESSING_TIME_SERVICE36': '0.00031273', 'PROCESSING_TIME_SERVICE37': '0.00027061', 'PROCESSING_TIME_SERVICE38': '0.00026683', 'PROCESSING_TIME_SERVICE39': '0.00023522', 'PROCESSING_TIME_SERVICE40': '0.00023345', 'PROCESSING_TIME_SERVICE41': '0.00015364', 'PROCESSING_TIME_SERVICE42': '9.551e-05', 'SLOWPOKE_DELAY_MICROS_SERVICE4': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE4': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE4': 'true', 'SLOWPOKE_DELAY_MICROS_SERVICE0': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE0': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE0': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE1': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE1': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE1': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE2': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE2': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE2': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE3': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE3': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE3': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE5': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE5': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE5': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE6': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE6': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE6': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE7': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE7': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE7': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE8': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE8': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE8': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE9': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE9': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE9': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE10': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE10': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE10': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE11': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE11': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE11': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE12': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE12': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE12': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE13': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE13': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE13': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE14': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE14': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE14': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE15': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE15': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE15': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE16': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE16': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE16': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE17': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE17': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE17': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE18': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE18': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE18': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE19': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE19': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE19': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE20': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE20': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE20': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE21': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE21': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE21': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE22': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE22': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE22': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE23': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE23': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE23': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE24': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE24': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE24': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE25': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE25': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE25': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE26': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE26': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE26': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE27': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE27': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE27': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE28': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE28': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE28': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE29': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE29': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE29': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE30': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE30': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE30': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE31': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE31': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE31': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE32': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE32': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE32': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE33': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE33': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE33': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE34': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE34': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE34': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE35': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE35': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE35': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE36': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE36': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE36': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE37': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE37': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE37': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE38': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE38': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE38': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE39': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE39': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE39': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE40': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE40': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE40': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE41': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE41': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE41': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE42': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE42': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE42': 'false'}
+    [exp] Executing cmd `bash run.sh synthetic large-scale 8 512 10000`:
+        [run.sh] Running benchmark synthetic with request large-scale, thread 8, conn 512, duration 60
+        [run.sh] Deleting all services
+        [run.sh] Waiting for all pods to be deleted
+        [run.sh] Deploying all services
+        configmap/config-service0 created
+        deployment.apps/service0 created
+        service/service0 created
+        configmap/config-service1 created
+        deployment.apps/service1 created
+        service/service1 created
+        configmap/config-service10 created
+        deployment.apps/service10 created
+        service/service10 created
+        configmap/config-service11 created
+        deployment.apps/service11 created
+        service/service11 created
+        configmap/config-service12 created
+        deployment.apps/service12 created
+        service/service12 created
+        configmap/config-service13 created
+        deployment.apps/service13 created
+        service/service13 created
+        configmap/config-service14 created
+        deployment.apps/service14 created
+        service/service14 created
+        configmap/config-service15 created
+        deployment.apps/service15 created
+        service/service15 created
+        configmap/config-service16 created
+        deployment.apps/service16 created
+        service/service16 created
+        configmap/config-service17 created
+        deployment.apps/service17 created
+        service/service17 created
+        configmap/config-service18 created
+        deployment.apps/service18 created
+        service/service18 created
+        configmap/config-service19 created
+        deployment.apps/service19 created
+        service/service19 created
+        configmap/config-service2 created
+        deployment.apps/service2 created
+        service/service2 created
+        configmap/config-service20 created
+        deployment.apps/service20 created
+        service/service20 created
+        configmap/config-service21 created
+        deployment.apps/service21 created
+        service/service21 created
+        configmap/config-service22 created
+        deployment.apps/service22 created
+        service/service22 created
+        configmap/config-service23 created
+        deployment.apps/service23 created
+        service/service23 created
+        configmap/config-service24 created
+        deployment.apps/service24 created
+        service/service24 created
+        configmap/config-service25 created
+        deployment.apps/service25 created
+        service/service25 created
+        configmap/config-service26 created
+        deployment.apps/service26 created
+        service/service26 created
+        configmap/config-service27 created
+        deployment.apps/service27 created
+        service/service27 created
+        configmap/config-service28 created
+        deployment.apps/service28 created
+        service/service28 created
+        configmap/config-service29 created
+        deployment.apps/service29 created
+        service/service29 created
+        configmap/config-service3 created
+        deployment.apps/service3 created
+        service/service3 created
+        configmap/config-service30 created
+        deployment.apps/service30 created
+        service/service30 created
+        configmap/config-service31 created
+        deployment.apps/service31 created
+        service/service31 created
+        configmap/config-service32 created
+        deployment.apps/service32 created
+        service/service32 created
+        configmap/config-service33 created
+        deployment.apps/service33 created
+        service/service33 created
+        configmap/config-service34 created
+        deployment.apps/service34 created
+        service/service34 created
+        configmap/config-service35 created
+        deployment.apps/service35 created
+        service/service35 created
+        configmap/config-service36 created
+        deployment.apps/service36 created
+        service/service36 created
+        configmap/config-service37 created
+        deployment.apps/service37 created
+        service/service37 created
+        configmap/config-service38 created
+        deployment.apps/service38 created
+        service/service38 created
+        configmap/config-service39 created
+        deployment.apps/service39 created
+        service/service39 created
+        configmap/config-service4 created
+        deployment.apps/service4 created
+        service/service4 created
+        configmap/config-service40 created
+        deployment.apps/service40 created
+        service/service40 created
+        configmap/config-service41 created
+        deployment.apps/service41 created
+        service/service41 created
+        configmap/config-service42 created
+        deployment.apps/service42 created
+        service/service42 created
+        configmap/config-service5 created
+        deployment.apps/service5 created
+        service/service5 created
+        configmap/config-service6 created
+        deployment.apps/service6 created
+        service/service6 created
+        configmap/config-service7 created
+        deployment.apps/service7 created
+        service/service7 created
+        configmap/config-service8 created
+        deployment.apps/service8 created
+        service/service8 created
+        configmap/config-service9 created
+        deployment.apps/service9 created
+        service/service9 created
+        [run.sh] Client pod not found, deploying client
+        deployment.apps/ubuntu-client created
+        [run.sh] Waiting for all pods to be running
+        [run.sh] All pods are running
+        [run.sh] Running warmup test
+        [run.sh] /wrk/wrk -t8 -c512 --timeout 10s -d10s -L http://service0:80/endpoint1
+        Running 10s test @ http://service0:80/endpoint1
+        8 threads and 512 connections
+        Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency     1.14s   439.95ms   2.48s    74.47%
+        Req/Sec    67.22     47.04   240.00     61.45%
+        Latency Distribution
+        50%    1.05s
+        75%    1.25s
+        90%    1.82s
+        99%    2.37s
+        4265 requests in 10.04s, 662.24KB read
+        Requests/sec:    424.92
+        Transfer/sec:     65.98KB
+        [run.sh] Speed is 424.92, duration is 35
+        [run.sh] Fix the request number.
+        [run.sh] Running the actual test
+        [run.sh] /wrk/wrk --timeout 20s -t8 -c512 -d35s -L -s /wrk/fix_req_n.lua http://service0:80/endpoint1
+        [run.sh] Checking the resource usage
+        NAME                             CPU(cores)   MEMORY(bytes)
+        service0-69955d4677-gvz8t        994m         110Mi
+        service1-58c95cb96-5mj2f         831m         60Mi
+        service10-9549b4cd-tgpqf         409m         10Mi
+        service11-b76846c44-tfcdq        364m         11Mi
+        service12-8ddc6874b-bcltg        333m         11Mi
+        service13-6dc48cb75b-6rrc7       346m         11Mi
+        service14-6fdd479dcd-q99l7       367m         16Mi
+        service15-6bc59bd7d4-2z4km       317m         21Mi
+        service16-7886b6b8d6-6vq57       1m           11Mi
+        service17-7b5f6467b8-h4bmd       329m         11Mi
+        service18-65595ccfd6-kjqwp       332m         12Mi
+        service19-55c65f57c6-fgqhw       320m         12Mi
+        service2-5d59c5bd5d-j8p8h        932m         71Mi
+        service20-58b86cfc4d-74wc4       325m         16Mi
+        service21-8d587d69d-kknjv        331m         24Mi
+        service22-55796dcf9b-hkt8j       316m         19Mi
+        service23-599c6478cd-5jpnl       313m         11Mi
+        service24-655749d78d-srr75       281m         13Mi
+        service25-656bf89c8b-p7cmn       290m         20Mi
+        service26-5fcc5669d4-spfx4       276m         23Mi
+        service27-8687746986-dkfm9       231m         22Mi
+        service28-6bbbb998d8-54q9p       259m         29Mi
+        service29-655dfdfd6b-td4tm       222m         20Mi
+        service3-564487d7d8-bfnm5        901m         64Mi
+        service30-6d966bbbcd-lrcpc       247m         24Mi
+        service31-9476bd9bd-7gqwg        229m         12Mi
+        service32-64b88b58b-gmzpm        233m         12Mi
+        service33-69bdf8b97b-fv2pp       228m         12Mi
+        service34-9d9487db6-2jdvc        211m         12Mi
+        service35-575bf5bbb8-jh2zm       209m         19Mi
+        service36-765d6cd758-7x45d       177m         15Mi
+        service37-66f4568564-rnkld       186m         9Mi
+        service38-56fc9c9b7d-tsmbc       183m         9Mi
+        service39-5b478bd9b-pfhbp        174m         11Mi
+        service4-6bfbd6d59c-45vk4        1471m        192Mi
+        service40-7c5d878d8d-qztv2       142m         9Mi
+        service41-567cc54974-mc5jb       131m         14Mi
+        service42-6c5db85bd-2552m        112m         24Mi
+        service5-ffd8ccc6-n2v5t          884m         69Mi
+        service6-6b89db49b6-bmvzs        756m         59Mi
+        service7-845b5b8588-xrdnk        413m         25Mi
+        service8-7c9f97fd46-rsmgg        1m           30Mi
+        service9-7cb9cf658d-mw442        379m         25Mi
+        ubuntu-client-76886f6bbd-psxcg   14m          20Mi
+        Running 35s test @ http://service0:80/endpoint1
+        8 threads and 512 connections
+        Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency   996.70ms  295.16ms   2.80s    75.67%
+        Req/Sec    67.54     47.14   393.00     63.19%
+        Latency Distribution
+        50%  963.48ms
+        75%    1.12s
+        90%    1.36s
+        99%    1.95s
+        10000 requests in 35.00s, 1.52MB read
+        Requests/sec:    285.71
+        Transfer/sec:     44.36KB
+        ------------------------------
+        stop time: 19.153502
+        stop time: 19.582166
+        stop time: 19.894166
+        stop time: 19.933511
+        stop time: 20.003334
+        stop time: 20.184721
+        stop time: 20.205280
+        stop time: 20.283906
+        [run.sh] Test finished with status 0
+        > STDERR
+        > No resources found in default namespace.
+    [exp] Times: [19.153502, 19.582166, 19.894166, 19.933511, 20.003334, 20.184721, 20.20528, 20.283906]
+    [exp] Throughput: 502.3844863268715
+[test.py] Baseline throughput: 502.3844863268715
+[test.py] Running 0th optmization experiment
+[test.py] Running 0th groundtruth exp
+    [exp] Running (pre_run: False) workload synthetic/large-scale request with the following configuration: {'CLIENT_CPU_QUOTA': '2', 'SLOWPOKE_POKER_BATCH_THRESHOLD': '20000000', 'PROCESSING_TIME_SERVICE4': '0.0', 'PROCESSING_TIME_SERVICE0': '0.00114823', 'PROCESSING_TIME_SERVICE1': '0.00112713', 'PROCESSING_TIME_SERVICE2': '0.00112567', 'PROCESSING_TIME_SERVICE3': '0.00108198', 'PROCESSING_TIME_SERVICE5': '0.00092397', 'PROCESSING_TIME_SERVICE6': '0.00091663', 'PROCESSING_TIME_SERVICE7': '0.0008445', 'PROCESSING_TIME_SERVICE8': '0.00082763', 'PROCESSING_TIME_SERVICE9': '0.00082746', 'PROCESSING_TIME_SERVICE10': '0.00081339', 'PROCESSING_TIME_SERVICE11': '0.00079052', 'PROCESSING_TIME_SERVICE12': '0.00076379', 'PROCESSING_TIME_SERVICE13': '0.00073892', 'PROCESSING_TIME_SERVICE14': '0.00071725', 'PROCESSING_TIME_SERVICE15': '0.0007103', 'PROCESSING_TIME_SERVICE16': '0.00064814', 'PROCESSING_TIME_SERVICE17': '0.00063596', 'PROCESSING_TIME_SERVICE18': '0.00063485', 'PROCESSING_TIME_SERVICE19': '0.00062251', 'PROCESSING_TIME_SERVICE20': '0.0006121', 'PROCESSING_TIME_SERVICE21': '0.00060493', 'PROCESSING_TIME_SERVICE22': '0.00059362', 'PROCESSING_TIME_SERVICE23': '0.00058652', 'PROCESSING_TIME_SERVICE24': '0.00058578', 'PROCESSING_TIME_SERVICE25': '0.00055957', 'PROCESSING_TIME_SERVICE26': '0.00054507', 'PROCESSING_TIME_SERVICE27': '0.00050763', 'PROCESSING_TIME_SERVICE28': '0.00045135', 'PROCESSING_TIME_SERVICE29': '0.00044947', 'PROCESSING_TIME_SERVICE30': '0.00043772', 'PROCESSING_TIME_SERVICE31': '0.00040844', 'PROCESSING_TIME_SERVICE32': '0.00039446', 'PROCESSING_TIME_SERVICE33': '0.00037979', 'PROCESSING_TIME_SERVICE34': '0.00033094', 'PROCESSING_TIME_SERVICE35': '0.00032007', 'PROCESSING_TIME_SERVICE36': '0.00031273', 'PROCESSING_TIME_SERVICE37': '0.00027061', 'PROCESSING_TIME_SERVICE38': '0.00026683', 'PROCESSING_TIME_SERVICE39': '0.00023522', 'PROCESSING_TIME_SERVICE40': '0.00023345', 'PROCESSING_TIME_SERVICE41': '0.00015364', 'PROCESSING_TIME_SERVICE42': '9.551e-05', 'SLOWPOKE_DELAY_MICROS_SERVICE4': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE4': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE4': 'true', 'SLOWPOKE_DELAY_MICROS_SERVICE0': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE0': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE0': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE1': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE1': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE1': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE2': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE2': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE2': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE3': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE3': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE3': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE5': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE5': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE5': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE6': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE6': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE6': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE7': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE7': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE7': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE8': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE8': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE8': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE9': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE9': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE9': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE10': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE10': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE10': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE11': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE11': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE11': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE12': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE12': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE12': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE13': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE13': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE13': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE14': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE14': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE14': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE15': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE15': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE15': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE16': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE16': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE16': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE17': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE17': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE17': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE18': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE18': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE18': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE19': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE19': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE19': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE20': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE20': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE20': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE21': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE21': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE21': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE22': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE22': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE22': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE23': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE23': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE23': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE24': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE24': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE24': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE25': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE25': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE25': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE26': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE26': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE26': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE27': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE27': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE27': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE28': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE28': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE28': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE29': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE29': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE29': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE30': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE30': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE30': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE31': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE31': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE31': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE32': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE32': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE32': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE33': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE33': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE33': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE34': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE34': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE34': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE35': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE35': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE35': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE36': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE36': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE36': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE37': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE37': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE37': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE38': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE38': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE38': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE39': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE39': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE39': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE40': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE40': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE40': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE41': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE41': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE41': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE42': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE42': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE42': 'false'}
+    [exp] Executing cmd `bash run.sh synthetic large-scale 8 512 10000`:
+        [run.sh] Running benchmark synthetic with request large-scale, thread 8, conn 512, duration 60
+        [run.sh] Deleting all services
+        configmap "config-service0" deleted
+        deployment.apps "service0" deleted
+        service "service0" deleted
+        configmap "config-service1" deleted
+        deployment.apps "service1" deleted
+        service "service1" deleted
+        configmap "config-service10" deleted
+        deployment.apps "service10" deleted
+        service "service10" deleted
+        configmap "config-service11" deleted
+        deployment.apps "service11" deleted
+        service "service11" deleted
+        configmap "config-service12" deleted
+        deployment.apps "service12" deleted
+        service "service12" deleted
+        configmap "config-service13" deleted
+        deployment.apps "service13" deleted
+        service "service13" deleted
+        configmap "config-service14" deleted
+        deployment.apps "service14" deleted
+        service "service14" deleted
+        configmap "config-service15" deleted
+        deployment.apps "service15" deleted
+        service "service15" deleted
+        configmap "config-service16" deleted
+        deployment.apps "service16" deleted
+        service "service16" deleted
+        configmap "config-service17" deleted
+        deployment.apps "service17" deleted
+        service "service17" deleted
+        configmap "config-service18" deleted
+        deployment.apps "service18" deleted
+        service "service18" deleted
+        configmap "config-service19" deleted
+        deployment.apps "service19" deleted
+        service "service19" deleted
+        configmap "config-service2" deleted
+        deployment.apps "service2" deleted
+        service "service2" deleted
+        configmap "config-service20" deleted
+        deployment.apps "service20" deleted
+        service "service20" deleted
+        configmap "config-service21" deleted
+        deployment.apps "service21" deleted
+        service "service21" deleted
+        configmap "config-service22" deleted
+        deployment.apps "service22" deleted
+        service "service22" deleted
+        configmap "config-service23" deleted
+        deployment.apps "service23" deleted
+        service "service23" deleted
+        configmap "config-service24" deleted
+        deployment.apps "service24" deleted
+        service "service24" deleted
+        configmap "config-service25" deleted
+        deployment.apps "service25" deleted
+        service "service25" deleted
+        configmap "config-service26" deleted
+        deployment.apps "service26" deleted
+        service "service26" deleted
+        configmap "config-service27" deleted
+        deployment.apps "service27" deleted
+        service "service27" deleted
+        configmap "config-service28" deleted
+        deployment.apps "service28" deleted
+        service "service28" deleted
+        configmap "config-service29" deleted
+        deployment.apps "service29" deleted
+        service "service29" deleted
+        configmap "config-service3" deleted
+        deployment.apps "service3" deleted
+        service "service3" deleted
+        configmap "config-service30" deleted
+        deployment.apps "service30" deleted
+        service "service30" deleted
+        configmap "config-service31" deleted
+        deployment.apps "service31" deleted
+        service "service31" deleted
+        configmap "config-service32" deleted
+        deployment.apps "service32" deleted
+        service "service32" deleted
+        configmap "config-service33" deleted
+        deployment.apps "service33" deleted
+        service "service33" deleted
+        configmap "config-service34" deleted
+        deployment.apps "service34" deleted
+        service "service34" deleted
+        configmap "config-service35" deleted
+        deployment.apps "service35" deleted
+        service "service35" deleted
+        configmap "config-service36" deleted
+        deployment.apps "service36" deleted
+        service "service36" deleted
+        configmap "config-service37" deleted
+        deployment.apps "service37" deleted
+        service "service37" deleted
+        configmap "config-service38" deleted
+        deployment.apps "service38" deleted
+        service "service38" deleted
+        configmap "config-service39" deleted
+        deployment.apps "service39" deleted
+        service "service39" deleted
+        configmap "config-service4" deleted
+        deployment.apps "service4" deleted
+        service "service4" deleted
+        configmap "config-service40" deleted
+        deployment.apps "service40" deleted
+        service "service40" deleted
+        configmap "config-service41" deleted
+        deployment.apps "service41" deleted
+        service "service41" deleted
+        configmap "config-service42" deleted
+        deployment.apps "service42" deleted
+        service "service42" deleted
+        configmap "config-service5" deleted
+        deployment.apps "service5" deleted
+        service "service5" deleted
+        configmap "config-service6" deleted
+        deployment.apps "service6" deleted
+        service "service6" deleted
+        configmap "config-service7" deleted
+        deployment.apps "service7" deleted
+        service "service7" deleted
+        configmap "config-service8" deleted
+        deployment.apps "service8" deleted
+        service "service8" deleted
+        configmap "config-service9" deleted
+        deployment.apps "service9" deleted
+        service "service9" deleted
+        deployment.apps "ubuntu-client" deleted
+        [run.sh] Waiting for all pods to be deleted
+        [run.sh] Deploying all services
+        configmap/config-service0 created
+        deployment.apps/service0 created
+        service/service0 created
+        configmap/config-service1 created
+        deployment.apps/service1 created
+        service/service1 created
+        configmap/config-service10 created
+        deployment.apps/service10 created
+        service/service10 created
+        configmap/config-service11 created
+        deployment.apps/service11 created
+        service/service11 created
+        configmap/config-service12 created
+        deployment.apps/service12 created
+        service/service12 created
+        configmap/config-service13 created
+        deployment.apps/service13 created
+        service/service13 created
+        configmap/config-service14 created
+        deployment.apps/service14 created
+        service/service14 created
+        configmap/config-service15 created
+        deployment.apps/service15 created
+        service/service15 created
+        configmap/config-service16 created
+        deployment.apps/service16 created
+        service/service16 created
+        configmap/config-service17 created
+        deployment.apps/service17 created
+        service/service17 created
+        configmap/config-service18 created
+        deployment.apps/service18 created
+        service/service18 created
+        configmap/config-service19 created
+        deployment.apps/service19 created
+        service/service19 created
+        configmap/config-service2 created
+        deployment.apps/service2 created
+        service/service2 created
+        configmap/config-service20 created
+        deployment.apps/service20 created
+        service/service20 created
+        configmap/config-service21 created
+        deployment.apps/service21 created
+        service/service21 created
+        configmap/config-service22 created
+        deployment.apps/service22 created
+        service/service22 created
+        configmap/config-service23 created
+        deployment.apps/service23 created
+        service/service23 created
+        configmap/config-service24 created
+        deployment.apps/service24 created
+        service/service24 created
+        configmap/config-service25 created
+        deployment.apps/service25 created
+        service/service25 created
+        configmap/config-service26 created
+        deployment.apps/service26 created
+        service/service26 created
+        configmap/config-service27 created
+        deployment.apps/service27 created
+        service/service27 created
+        configmap/config-service28 created
+        deployment.apps/service28 created
+        service/service28 created
+        configmap/config-service29 created
+        deployment.apps/service29 created
+        service/service29 created
+        configmap/config-service3 created
+        deployment.apps/service3 created
+        service/service3 created
+        configmap/config-service30 created
+        deployment.apps/service30 created
+        service/service30 created
+        configmap/config-service31 created
+        deployment.apps/service31 created
+        service/service31 created
+        configmap/config-service32 created
+        deployment.apps/service32 created
+        service/service32 created
+        configmap/config-service33 created
+        deployment.apps/service33 created
+        service/service33 created
+        configmap/config-service34 created
+        deployment.apps/service34 created
+        service/service34 created
+        configmap/config-service35 created
+        deployment.apps/service35 created
+        service/service35 created
+        configmap/config-service36 created
+        deployment.apps/service36 created
+        service/service36 created
+        configmap/config-service37 created
+        deployment.apps/service37 created
+        service/service37 created
+        configmap/config-service38 created
+        deployment.apps/service38 created
+        service/service38 created
+        configmap/config-service39 created
+        deployment.apps/service39 created
+        service/service39 created
+        configmap/config-service4 created
+        deployment.apps/service4 created
+        service/service4 created
+        configmap/config-service40 created
+        deployment.apps/service40 created
+        service/service40 created
+        configmap/config-service41 created
+        deployment.apps/service41 created
+        service/service41 created
+        configmap/config-service42 created
+        deployment.apps/service42 created
+        service/service42 created
+        configmap/config-service5 created
+        deployment.apps/service5 created
+        service/service5 created
+        configmap/config-service6 created
+        deployment.apps/service6 created
+        service/service6 created
+        configmap/config-service7 created
+        deployment.apps/service7 created
+        service/service7 created
+        configmap/config-service8 created
+        deployment.apps/service8 created
+        service/service8 created
+        configmap/config-service9 created
+        deployment.apps/service9 created
+        service/service9 created
+        [run.sh] Client pod not found, deploying client
+        deployment.apps/ubuntu-client created
+        [run.sh] Waiting for all pods to be running
+        [run.sh] All pods are running
+        [run.sh] Running warmup test
+        [run.sh] /wrk/wrk -t8 -c512 --timeout 10s -d10s -L http://service0:80/endpoint1
+        Running 10s test @ http://service0:80/endpoint1
+        8 threads and 512 connections
+        Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency   814.09ms  312.97ms   1.78s    72.92%
+        Req/Sec    88.15     57.96   290.00     60.27%
+        Latency Distribution
+        50%  759.81ms
+        75%  984.38ms
+        90%    1.24s
+        99%    1.71s
+        6082 requests in 10.04s, 0.92MB read
+        Requests/sec:    605.75
+        Transfer/sec:     94.06KB
+        [run.sh] Speed is 605.75, duration is 24
+        [run.sh] Fix the request number.
+        [run.sh] Running the actual test
+        [run.sh] /wrk/wrk --timeout 20s -t8 -c512 -d24s -L -s /wrk/fix_req_n.lua http://service0:80/endpoint1
+        Running 24s test @ http://service0:80/endpoint1
+        8 threads and 512 connections
+        Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency   701.86ms  231.57ms   1.83s    74.04%
+        Req/Sec    93.41     58.04   303.00     65.56%
+        Latency Distribution
+        50%  675.52ms
+        75%  823.44ms
+        90%  999.18ms
+        99%    1.38s
+        10000 requests in 24.00s, 1.52MB read
+        Requests/sec:    416.66
+        Transfer/sec:     64.70KB
+        ------------------------------
+        stop time: 13.767425
+        stop time: 13.789255
+        stop time: 13.915144
+        stop time: 14.216184
+        stop time: 14.203415
+        stop time: 14.215340
+        stop time: 14.239673
+        stop time: 14.233240
+        [run.sh] Checking the resource usage
+        NAME                             CPU(cores)   MEMORY(bytes)
+        service0-69955d4677-2bbdt        1402m        119Mi
+        service1-58c95cb96-pffpt         1110m        137Mi
+        service10-9549b4cd-8ptxw         563m         25Mi
+        service11-b76846c44-6qmq8        525m         26Mi
+        service12-8ddc6874b-jqvj8        552m         24Mi
+        service13-6dc48cb75b-g78nd       500m         17Mi
+        service14-6fdd479dcd-sv6wc       471m         19Mi
+        service15-6bc59bd7d4-r28qv       514m         16Mi
+        service16-7886b6b8d6-g9xcn       491m         17Mi
+        service17-7b5f6467b8-8ngrc       417m         16Mi
+        service18-65595ccfd6-7n4vh       429m         20Mi
+        service19-55c65f57c6-6gtr9       409m         13Mi
+        service2-5d59c5bd5d-z5lwp        1264m        61Mi
+        service20-58b86cfc4d-dtvzf       418m         13Mi
+        service21-8d587d69d-f8mjh        430m         13Mi
+        service22-55796dcf9b-v6d4l       409m         13Mi
+        service23-599c6478cd-fqngj       407m         14Mi
+        service24-655749d78d-r2n2t       414m         14Mi
+        service25-656bf89c8b-r542m       388m         11Mi
+        service26-5fcc5669d4-p9rqd       378m         12Mi
+        service27-8687746986-5v7zp       383m         11Mi
+        service28-6bbbb998d8-pj5hl       341m         11Mi
+        service29-655dfdfd6b-9fx46       347m         11Mi
+        service3-564487d7d8-5pd4c        1091m        62Mi
+        service30-6d966bbbcd-7nmj5       317m         10Mi
+        service31-9476bd9bd-hndp6        297m         13Mi
+        service32-64b88b58b-jqrqh        304m         11Mi
+        service33-69bdf8b97b-gfhzs       289m         11Mi
+        service34-9d9487db6-mbc6k        272m         12Mi
+        service35-575bf5bbb8-wlgpc       266m         12Mi
+        service36-765d6cd758-qcnfw       273m         12Mi
+        service37-66f4568564-qhvj6       247m         11Mi
+        service38-56fc9c9b7d-gmtdt       241m         12Mi
+        service39-5b478bd9b-fbzhh        231m         12Mi
+        service4-6bfbd6d59c-nnn4z        567m         37Mi
+        service40-7c5d878d8d-7zmrn       234m         11Mi
+        service41-567cc54974-bcd5p       164m         10Mi
+        service42-6c5db85bd-k5wn9        145m         11Mi
+        service5-ffd8ccc6-4ghg9          1078m        46Mi
+        service6-6b89db49b6-xd9sr        970m         46Mi
+        service7-845b5b8588-ksv6b        540m         24Mi
+        service8-7c9f97fd46-jgtck        597m         26Mi
+        service9-7cb9cf658d-lhvl7        541m         24Mi
+        ubuntu-client-76886f6bbd-hqchh   26m          16Mi
+        [run.sh] Test finished with status 0
+        > STDERR
+        > No resources found in default namespace.
+    [exp] Times: [13.767425, 13.789255, 13.915144, 14.216184, 14.203415, 14.21534, 14.239673, 14.23324]
+    [exp] Throughput: 710.6078365334788
+[test.py] Running 0th slowdown exp
+    [exp] Running (pre_run: False) workload synthetic/large-scale request with the following configuration: {'CLIENT_CPU_QUOTA': '2', 'SLOWPOKE_POKER_BATCH_THRESHOLD': '20000000', 'PROCESSING_TIME_SERVICE4': '0.00234975', 'PROCESSING_TIME_SERVICE0': '0.00114823', 'PROCESSING_TIME_SERVICE1': '0.00112713', 'PROCESSING_TIME_SERVICE2': '0.00112567', 'PROCESSING_TIME_SERVICE3': '0.00108198', 'PROCESSING_TIME_SERVICE5': '0.00092397', 'PROCESSING_TIME_SERVICE6': '0.00091663', 'PROCESSING_TIME_SERVICE7': '0.0008445', 'PROCESSING_TIME_SERVICE8': '0.00082763', 'PROCESSING_TIME_SERVICE9': '0.00082746', 'PROCESSING_TIME_SERVICE10': '0.00081339', 'PROCESSING_TIME_SERVICE11': '0.00079052', 'PROCESSING_TIME_SERVICE12': '0.00076379', 'PROCESSING_TIME_SERVICE13': '0.00073892', 'PROCESSING_TIME_SERVICE14': '0.00071725', 'PROCESSING_TIME_SERVICE15': '0.0007103', 'PROCESSING_TIME_SERVICE16': '0.00064814', 'PROCESSING_TIME_SERVICE17': '0.00063596', 'PROCESSING_TIME_SERVICE18': '0.00063485', 'PROCESSING_TIME_SERVICE19': '0.00062251', 'PROCESSING_TIME_SERVICE20': '0.0006121', 'PROCESSING_TIME_SERVICE21': '0.00060493', 'PROCESSING_TIME_SERVICE22': '0.00059362', 'PROCESSING_TIME_SERVICE23': '0.00058652', 'PROCESSING_TIME_SERVICE24': '0.00058578', 'PROCESSING_TIME_SERVICE25': '0.00055957', 'PROCESSING_TIME_SERVICE26': '0.00054507', 'PROCESSING_TIME_SERVICE27': '0.00050763', 'PROCESSING_TIME_SERVICE28': '0.00045135', 'PROCESSING_TIME_SERVICE29': '0.00044947', 'PROCESSING_TIME_SERVICE30': '0.00043772', 'PROCESSING_TIME_SERVICE31': '0.00040844', 'PROCESSING_TIME_SERVICE32': '0.00039446', 'PROCESSING_TIME_SERVICE33': '0.00037979', 'PROCESSING_TIME_SERVICE34': '0.00033094', 'PROCESSING_TIME_SERVICE35': '0.00032007', 'PROCESSING_TIME_SERVICE36': '0.00031273', 'PROCESSING_TIME_SERVICE37': '0.00027061', 'PROCESSING_TIME_SERVICE38': '0.00026683', 'PROCESSING_TIME_SERVICE39': '0.00023522', 'PROCESSING_TIME_SERVICE40': '0.00023345', 'PROCESSING_TIME_SERVICE41': '0.00015364', 'PROCESSING_TIME_SERVICE42': '9.551e-05', 'SLOWPOKE_DELAY_MICROS_SERVICE4': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE4': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE4': 'true', 'SLOWPOKE_DELAY_MICROS_SERVICE0': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE0': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE0': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE1': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE1': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE1': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE2': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE2': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE2': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE3': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE3': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE3': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE5': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE5': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE5': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE6': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE6': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE6': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE7': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE7': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE7': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE8': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE8': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE8': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE9': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE9': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE9': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE10': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE10': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE10': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE11': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE11': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE11': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE12': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE12': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE12': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE13': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE13': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE13': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE14': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE14': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE14': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE15': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE15': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE15': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE16': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE16': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE16': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE17': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE17': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE17': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE18': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE18': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE18': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE19': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE19': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE19': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE20': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE20': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE20': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE21': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE21': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE21': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE22': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE22': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE22': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE23': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE23': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE23': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE24': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE24': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE24': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE25': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE25': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE25': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE26': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE26': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE26': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE27': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE27': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE27': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE28': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE28': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE28': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE29': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE29': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE29': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE30': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE30': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE30': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE31': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE31': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE31': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE32': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE32': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE32': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE33': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE33': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE33': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE34': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE34': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE34': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE35': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE35': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE35': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE36': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE36': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE36': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE37': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE37': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE37': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE38': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE38': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE38': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE39': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE39': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE39': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE40': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE40': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE40': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE41': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE41': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE41': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE42': '1174.5', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE42': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE42': 'false'}
+    [exp] Executing cmd `bash run.sh synthetic large-scale 8 512 10000`:
+        [run.sh] Running benchmark synthetic with request large-scale, thread 8, conn 512, duration 60
+        [run.sh] Deleting all services
+        configmap "config-service0" deleted
+        deployment.apps "service0" deleted
+        service "service0" deleted
+        configmap "config-service1" deleted
+        deployment.apps "service1" deleted
+        service "service1" deleted
+        configmap "config-service10" deleted
+        deployment.apps "service10" deleted
+        service "service10" deleted
+        configmap "config-service11" deleted
+        deployment.apps "service11" deleted
+        service "service11" deleted
+        configmap "config-service12" deleted
+        deployment.apps "service12" deleted
+        service "service12" deleted
+        configmap "config-service13" deleted
+        deployment.apps "service13" deleted
+        service "service13" deleted
+        configmap "config-service14" deleted
+        deployment.apps "service14" deleted
+        service "service14" deleted
+        configmap "config-service15" deleted
+        deployment.apps "service15" deleted
+        service "service15" deleted
+        configmap "config-service16" deleted
+        deployment.apps "service16" deleted
+        service "service16" deleted
+        configmap "config-service17" deleted
+        deployment.apps "service17" deleted
+        service "service17" deleted
+        configmap "config-service18" deleted
+        deployment.apps "service18" deleted
+        service "service18" deleted
+        configmap "config-service19" deleted
+        deployment.apps "service19" deleted
+        service "service19" deleted
+        configmap "config-service2" deleted
+        deployment.apps "service2" deleted
+        service "service2" deleted
+        configmap "config-service20" deleted
+        deployment.apps "service20" deleted
+        service "service20" deleted
+        configmap "config-service21" deleted
+        deployment.apps "service21" deleted
+        service "service21" deleted
+        configmap "config-service22" deleted
+        deployment.apps "service22" deleted
+        service "service22" deleted
+        configmap "config-service23" deleted
+        deployment.apps "service23" deleted
+        service "service23" deleted
+        configmap "config-service24" deleted
+        deployment.apps "service24" deleted
+        service "service24" deleted
+        configmap "config-service25" deleted
+        deployment.apps "service25" deleted
+        service "service25" deleted
+        configmap "config-service26" deleted
+        deployment.apps "service26" deleted
+        service "service26" deleted
+        configmap "config-service27" deleted
+        deployment.apps "service27" deleted
+        service "service27" deleted
+        configmap "config-service28" deleted
+        deployment.apps "service28" deleted
+        service "service28" deleted
+        configmap "config-service29" deleted
+        deployment.apps "service29" deleted
+        service "service29" deleted
+        configmap "config-service3" deleted
+        deployment.apps "service3" deleted
+        service "service3" deleted
+        configmap "config-service30" deleted
+        deployment.apps "service30" deleted
+        service "service30" deleted
+        configmap "config-service31" deleted
+        deployment.apps "service31" deleted
+        service "service31" deleted
+        configmap "config-service32" deleted
+        deployment.apps "service32" deleted
+        service "service32" deleted
+        configmap "config-service33" deleted
+        deployment.apps "service33" deleted
+        service "service33" deleted
+        configmap "config-service34" deleted
+        deployment.apps "service34" deleted
+        service "service34" deleted
+        configmap "config-service35" deleted
+        deployment.apps "service35" deleted
+        service "service35" deleted
+        configmap "config-service36" deleted
+        deployment.apps "service36" deleted
+        service "service36" deleted
+        configmap "config-service37" deleted
+        deployment.apps "service37" deleted
+        service "service37" deleted
+        configmap "config-service38" deleted
+        deployment.apps "service38" deleted
+        service "service38" deleted
+        configmap "config-service39" deleted
+        deployment.apps "service39" deleted
+        service "service39" deleted
+        configmap "config-service4" deleted
+        deployment.apps "service4" deleted
+        service "service4" deleted
+        configmap "config-service40" deleted
+        deployment.apps "service40" deleted
+        service "service40" deleted
+        configmap "config-service41" deleted
+        deployment.apps "service41" deleted
+        service "service41" deleted
+        configmap "config-service42" deleted
+        deployment.apps "service42" deleted
+        service "service42" deleted
+        configmap "config-service5" deleted
+        deployment.apps "service5" deleted
+        service "service5" deleted
+        configmap "config-service6" deleted
+        deployment.apps "service6" deleted
+        service "service6" deleted
+        configmap "config-service7" deleted
+        deployment.apps "service7" deleted
+        service "service7" deleted
+        configmap "config-service8" deleted
+        deployment.apps "service8" deleted
+        service "service8" deleted
+        configmap "config-service9" deleted
+        deployment.apps "service9" deleted
+        service "service9" deleted
+        deployment.apps "ubuntu-client" deleted
+        [run.sh] Waiting for all pods to be deleted
+        [run.sh] Deploying all services
+        configmap/config-service0 created
+        deployment.apps/service0 created
+        service/service0 created
+        configmap/config-service1 created
+        deployment.apps/service1 created
+        service/service1 created
+        configmap/config-service10 created
+        deployment.apps/service10 created
+        service/service10 created
+        configmap/config-service11 created
+        deployment.apps/service11 created
+        service/service11 created
+        configmap/config-service12 created
+        deployment.apps/service12 created
+        service/service12 created
+        configmap/config-service13 created
+        deployment.apps/service13 created
+        service/service13 created
+        configmap/config-service14 created
+        deployment.apps/service14 created
+        service/service14 created
+        configmap/config-service15 created
+        deployment.apps/service15 created
+        service/service15 created
+        configmap/config-service16 created
+        deployment.apps/service16 created
+        service/service16 created
+        configmap/config-service17 created
+        deployment.apps/service17 created
+        service/service17 created
+        configmap/config-service18 created
+        deployment.apps/service18 created
+        service/service18 created
+        configmap/config-service19 created
+        deployment.apps/service19 created
+        service/service19 created
+        configmap/config-service2 created
+        deployment.apps/service2 created
+        service/service2 created
+        configmap/config-service20 created
+        deployment.apps/service20 created
+        service/service20 created
+        configmap/config-service21 created
+        deployment.apps/service21 created
+        service/service21 created
+        configmap/config-service22 created
+        deployment.apps/service22 created
+        service/service22 created
+        configmap/config-service23 created
+        deployment.apps/service23 created
+        service/service23 created
+        configmap/config-service24 created
+        deployment.apps/service24 created
+        service/service24 created
+        configmap/config-service25 created
+        deployment.apps/service25 created
+        service/service25 created
+        configmap/config-service26 created
+        deployment.apps/service26 created
+        service/service26 created
+        configmap/config-service27 created
+        deployment.apps/service27 created
+        service/service27 created
+        configmap/config-service28 created
+        deployment.apps/service28 created
+        service/service28 created
+        configmap/config-service29 created
+        deployment.apps/service29 created
+        service/service29 created
+        configmap/config-service3 created
+        deployment.apps/service3 created
+        service/service3 created
+        configmap/config-service30 created
+        deployment.apps/service30 created
+        service/service30 created
+        configmap/config-service31 created
+        deployment.apps/service31 created
+        service/service31 created
+        configmap/config-service32 created
+        deployment.apps/service32 created
+        service/service32 created
+        configmap/config-service33 created
+        deployment.apps/service33 created
+        service/service33 created
+        configmap/config-service34 created
+        deployment.apps/service34 created
+        service/service34 created
+        configmap/config-service35 created
+        deployment.apps/service35 created
+        service/service35 created
+        configmap/config-service36 created
+        deployment.apps/service36 created
+        service/service36 created
+        configmap/config-service37 created
+        deployment.apps/service37 created
+        service/service37 created
+        configmap/config-service38 created
+        deployment.apps/service38 created
+        service/service38 created
+        configmap/config-service39 created
+        deployment.apps/service39 created
+        service/service39 created
+        configmap/config-service4 created
+        deployment.apps/service4 created
+        service/service4 created
+        configmap/config-service40 created
+        deployment.apps/service40 created
+        service/service40 created
+        configmap/config-service41 created
+        deployment.apps/service41 created
+        service/service41 created
+        configmap/config-service42 created
+        deployment.apps/service42 created
+        service/service42 created
+        configmap/config-service5 created
+        deployment.apps/service5 created
+        service/service5 created
+        configmap/config-service6 created
+        deployment.apps/service6 created
+        service/service6 created
+        configmap/config-service7 created
+        deployment.apps/service7 created
+        service/service7 created
+        configmap/config-service8 created
+        deployment.apps/service8 created
+        service/service8 created
+        configmap/config-service9 created
+        deployment.apps/service9 created
+        service/service9 created
+        [run.sh] Client pod not found, deploying client
+        deployment.apps/ubuntu-client created
+        [run.sh] Waiting for all pods to be running
+        [run.sh] All pods are running
+        [run.sh] Running warmup test
+        [run.sh] /wrk/wrk -t8 -c512 --timeout 10s -d10s -L http://service0:80/endpoint1
+        Running 10s test @ http://service0:80/endpoint1
+        8 threads and 512 connections
+        Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency     1.59s   552.16ms   3.40s    62.97%
+        Req/Sec    51.02     46.55   313.00     81.91%
+        Latency Distribution
+        50%    1.50s
+        75%    1.99s
+        90%    2.44s
+        99%    3.01s
+        3011 requests in 10.03s, 467.53KB read
+        Requests/sec:    300.23
+        Transfer/sec:     46.62KB
+        [run.sh] Speed is 300.23, duration is 49
+        [run.sh] Fix the request number.
+        [run.sh] Running the actual test
+        [run.sh] /wrk/wrk --timeout 20s -t8 -c512 -d49s -L -s /wrk/fix_req_n.lua http://service0:80/endpoint1
+        [run.sh] Checking the resource usage
+        NAME                             CPU(cores)   MEMORY(bytes)
+        service0-6577c98987-2gzvz        547m         143Mi
+        service1-67f797c9f8-ptlw9        427m         78Mi
+        service10-67b94d74bd-7rrfz       178m         25Mi
+        service11-866c77dfdb-6sjjb       123m         19Mi
+        service12-764c64d5b4-sm7g5       219m         15Mi
+        service13-55c796797d-jz4kb       131m         19Mi
+        service14-64fd44c7b8-rwblj       144m         15Mi
+        service15-5f79cddfcd-nv7q6       203m         16Mi
+        service16-669df96dfb-2fjwf       162m         17Mi
+        service17-7df9455d5d-lht6v       127m         17Mi
+        service18-7b776f4cd4-mtx4l       137m         15Mi
+        service19-6bbff8b758-5hbzf       120m         17Mi
+        service2-565cbcddd-tk99m         445m         96Mi
+        service20-7dbffc566b-cqrlb       126m         18Mi
+        service21-d9f989d4d-pjgx4        142m         17Mi
+        service22-fd5b68478-h6xgr        123m         18Mi
+        service23-ccfb675fb-jwzx8        123m         21Mi
+        service24-97965ff74-wlmll        104m         17Mi
+        service25-855f7f5cd8-6d7j7       128m         14Mi
+        service26-85fbcddf8b-dg8rj       122m         15Mi
+        service27-86d46b9bf6-2dcd8       154m         14Mi
+        service28-c5f8c6cb6-8zlmg        112m         13Mi
+        service29-6fdf7b84b8-wx6ns       132m         16Mi
+        service3-569df9fb66-c7pp4        417m         111Mi
+        service30-7c9dbfdf76-q9qtm       102m         14Mi
+        service31-774958495d-p6bdj       82m          17Mi
+        service32-76fc85cbd4-qvfmh       87m          18Mi
+        service33-7dc477bcbb-sxncw       89m          19Mi
+        service34-57c7f68464-kxxgn       85m          21Mi
+        service35-5ccd4944b-h4mjs        79m          17Mi
+        service36-79c67cdb8-stvtc        58m          15Mi
+        service37-7658794b58-r6fsk       82m          12Mi
+        service38-7b4fb6f8cb-hcfj7       80m          16Mi
+        service39-74d789b76b-txd4c       78m          12Mi
+        service4-6bfbd6d59c-z8c5r        641m         55Mi
+        service40-69b5749674-z4hjp       92m          13Mi
+        service41-747f9964b8-gcx4m       54m          15Mi
+        service42-59db96b466-shqvk       53m          16Mi
+        service5-76d446478-qh57p         433m         78Mi
+        service6-cc48df596-6ppgm         418m         54Mi
+        service7-85644c7f6b-p4zrv        166m         18Mi
+        service8-5d7bd6bd4d-8z4jx        201m         23Mi
+        service9-7657c7f9b6-sp7gm        139m         21Mi
+        ubuntu-client-76886f6bbd-7l9d7   15m          0Mi
+        Running 49s test @ http://service0:80/endpoint1
+        8 threads and 512 connections
+        Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency     1.36s   532.26ms   4.30s    71.06%
+        Req/Sec    55.59     55.56   343.00     87.77%
+        Latency Distribution
+        50%    1.25s
+        75%    1.64s
+        90%    2.08s
+        99%    2.98s
+        10000 requests in 49.00s, 1.52MB read
+        Requests/sec:    204.08
+        Transfer/sec:     31.69KB
+        ------------------------------
+        stop time: 27.280929
+        stop time: 27.281686
+        stop time: 28.015473
+        stop time: 27.606915
+        stop time: 28.038878
+        stop time: 27.406752
+        stop time: 27.994339
+        stop time: 27.356789
+        [run.sh] Test finished with status 0
+        > STDERR
+        > No resources found in default namespace.
+    [exp] Times: [27.280929, 27.281686, 28.015473, 27.606915, 28.038878, 27.406752, 27.994339, 27.356789]
+    [exp] Throughput: 362.02082759219206
+[test.py] Finished running 0th optmization experiment: groundtruth->710.6078365334788, slowdown->362.02082759219206, predicted->629.9621280155332, err->-11.34883466967595
+[test.py] Running 1th optmization experiment
+[test.py] Running 1th groundtruth exp
+    [exp] Running (pre_run: False) workload synthetic/large-scale request with the following configuration: {'CLIENT_CPU_QUOTA': '2', 'SLOWPOKE_POKER_BATCH_THRESHOLD': '20000000', 'PROCESSING_TIME_SERVICE4': '0.001174', 'PROCESSING_TIME_SERVICE0': '0.00114823', 'PROCESSING_TIME_SERVICE1': '0.00112713', 'PROCESSING_TIME_SERVICE2': '0.00112567', 'PROCESSING_TIME_SERVICE3': '0.00108198', 'PROCESSING_TIME_SERVICE5': '0.00092397', 'PROCESSING_TIME_SERVICE6': '0.00091663', 'PROCESSING_TIME_SERVICE7': '0.0008445', 'PROCESSING_TIME_SERVICE8': '0.00082763', 'PROCESSING_TIME_SERVICE9': '0.00082746', 'PROCESSING_TIME_SERVICE10': '0.00081339', 'PROCESSING_TIME_SERVICE11': '0.00079052', 'PROCESSING_TIME_SERVICE12': '0.00076379', 'PROCESSING_TIME_SERVICE13': '0.00073892', 'PROCESSING_TIME_SERVICE14': '0.00071725', 'PROCESSING_TIME_SERVICE15': '0.0007103', 'PROCESSING_TIME_SERVICE16': '0.00064814', 'PROCESSING_TIME_SERVICE17': '0.00063596', 'PROCESSING_TIME_SERVICE18': '0.00063485', 'PROCESSING_TIME_SERVICE19': '0.00062251', 'PROCESSING_TIME_SERVICE20': '0.0006121', 'PROCESSING_TIME_SERVICE21': '0.00060493', 'PROCESSING_TIME_SERVICE22': '0.00059362', 'PROCESSING_TIME_SERVICE23': '0.00058652', 'PROCESSING_TIME_SERVICE24': '0.00058578', 'PROCESSING_TIME_SERVICE25': '0.00055957', 'PROCESSING_TIME_SERVICE26': '0.00054507', 'PROCESSING_TIME_SERVICE27': '0.00050763', 'PROCESSING_TIME_SERVICE28': '0.00045135', 'PROCESSING_TIME_SERVICE29': '0.00044947', 'PROCESSING_TIME_SERVICE30': '0.00043772', 'PROCESSING_TIME_SERVICE31': '0.00040844', 'PROCESSING_TIME_SERVICE32': '0.00039446', 'PROCESSING_TIME_SERVICE33': '0.00037979', 'PROCESSING_TIME_SERVICE34': '0.00033094', 'PROCESSING_TIME_SERVICE35': '0.00032007', 'PROCESSING_TIME_SERVICE36': '0.00031273', 'PROCESSING_TIME_SERVICE37': '0.00027061', 'PROCESSING_TIME_SERVICE38': '0.00026683', 'PROCESSING_TIME_SERVICE39': '0.00023522', 'PROCESSING_TIME_SERVICE40': '0.00023345', 'PROCESSING_TIME_SERVICE41': '0.00015364', 'PROCESSING_TIME_SERVICE42': '9.551e-05', 'SLOWPOKE_DELAY_MICROS_SERVICE4': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE4': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE4': 'true', 'SLOWPOKE_DELAY_MICROS_SERVICE0': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE0': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE0': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE1': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE1': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE1': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE2': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE2': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE2': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE3': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE3': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE3': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE5': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE5': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE5': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE6': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE6': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE6': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE7': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE7': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE7': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE8': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE8': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE8': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE9': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE9': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE9': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE10': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE10': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE10': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE11': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE11': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE11': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE12': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE12': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE12': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE13': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE13': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE13': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE14': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE14': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE14': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE15': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE15': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE15': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE16': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE16': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE16': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE17': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE17': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE17': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE18': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE18': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE18': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE19': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE19': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE19': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE20': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE20': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE20': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE21': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE21': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE21': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE22': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE22': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE22': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE23': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE23': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE23': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE24': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE24': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE24': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE25': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE25': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE25': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE26': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE26': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE26': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE27': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE27': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE27': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE28': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE28': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE28': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE29': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE29': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE29': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE30': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE30': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE30': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE31': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE31': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE31': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE32': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE32': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE32': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE33': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE33': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE33': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE34': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE34': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE34': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE35': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE35': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE35': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE36': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE36': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE36': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE37': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE37': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE37': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE38': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE38': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE38': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE39': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE39': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE39': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE40': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE40': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE40': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE41': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE41': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE41': 'false', 'SLOWPOKE_DELAY_MICROS_SERVICE42': '0.0', 'SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE42': '100', 'SLOWPOKE_IS_TARGET_SERVICE_SERVICE42': 'false'}
+    [exp] Executing cmd `bash run.sh synthetic large-scale 8 512 10000`:
+        [run.sh] Running benchmark synthetic with request large-scale, thread 8, conn 512, duration 60
+        [run.sh] Deleting all services
+        configmap "config-service0" deleted
+        deployment.apps "service0" deleted
+        service "service0" deleted
+        configmap "config-service1" deleted
+        deployment.apps "service1" deleted
+        service "service1" deleted
+        configmap "config-service10" deleted
+        deployment.apps "service10" deleted
+        service "service10" deleted
+        configmap "config-service11" deleted
+        deployment.apps "service11" deleted
+        service "service11" deleted
+        configmap "config-service12" deleted
+        deployment.apps "service12" deleted
+        service "service12" deleted
+        configmap "config-service13" deleted
+        deployment.apps "service13" deleted
+        service "service13" deleted
+        configmap "config-service14" deleted
+        deployment.apps "service14" deleted
+        service "service14" deleted
+        configmap "config-service15" deleted
+        deployment.apps "service15" deleted
+        service "service15" deleted
+        configmap "config-service16" deleted
+        deployment.apps "service16" deleted
+        service "service16" deleted
+        configmap "config-service17" deleted
+        deployment.apps "service17" deleted
+        service "service17" deleted
+        configmap "config-service18" deleted
+        deployment.apps "service18" deleted
+        service "service18" deleted
+        configmap "config-service19" deleted
+        deployment.apps "service19" deleted
+        service "service19" deleted
+        configmap "config-service2" deleted
+        deployment.apps "service2" deleted
+        service "service2" deleted
+        configmap "config-service20" deleted
+        deployment.apps "service20" deleted
+        service "service20" deleted
+        configmap "config-service21" deleted
+        deployment.apps "service21" deleted
+        service "service21" deleted
+        configmap "config-service22" deleted
+        deployment.apps "service22" deleted
+        service "service22" deleted
+        configmap "config-service23" deleted
+        deployment.apps "service23" deleted
+        service "service23" deleted
+        configmap "config-service24" deleted
+        deployment.apps "service24" deleted
+        service "service24" deleted
+        configmap "config-service25" deleted
+        deployment.apps "service25" deleted
+        service "service25" deleted
+        configmap "config-service26" deleted
+        deployment.apps "service26" deleted
+        service "service26" deleted
+        configmap "config-service27" deleted
+        deployment.apps "service27" deleted
+        service "service27" deleted
+        configmap "config-service28" deleted
+        deployment.apps "service28" deleted
+        service "service28" deleted
+        configmap "config-service29" deleted
+        deployment.apps "service29" deleted
+        service "service29" deleted
+        configmap "config-service3" deleted
+        deployment.apps "service3" deleted
+        service "service3" deleted
+        configmap "config-service30" deleted
+        deployment.apps "service30" deleted
+        service "service30" deleted
+        configmap "config-service31" deleted
+        deployment.apps "service31" deleted
+        service "service31" deleted
+        configmap "config-service32" deleted
+        deployment.apps "service32" deleted
+        service "service32" deleted
+        configmap "config-service33" deleted
+        deployment.apps "service33" deleted
+        service "service33" deleted
+        configmap "config-service34" deleted
+        deployment.apps "service34" deleted
+        service "service34" deleted
+        configmap "config-service35" deleted
+        deployment.apps "service35" deleted
+        service "service35" deleted
+        configmap "config-service36" deleted
+        deployment.apps "service36" deleted
+        service "service36" deleted
+        configmap "config-service37" deleted
+        deployment.apps "service37" deleted
+        service "service37" deleted
+        configmap "config-service38" deleted
+        deployment.apps "service38" deleted
+        service "service38" deleted
+        configmap "config-service39" deleted
+        deployment.apps "service39" deleted
+        service "service39" deleted
+        configmap "config-service4" deleted
+        deployment.apps "service4" deleted
+        service "service4" deleted
+        configmap "config-service40" deleted
+        deployment.apps "service40" deleted
+        service "service40" deleted
+        configmap "config-service41" deleted
+        deployment.apps "service41" deleted
+        service "service41" deleted
+        configmap "config-service42" deleted
+        deployment.apps "service42" deleted
+        service "service42" deleted
+        configmap "config-service5" deleted
+        deployment.apps "service5" deleted
+        service "service5" deleted
+        configmap "config-service6" deleted
+        deployment.apps "service6" deleted
+        service "service6" deleted
+        configmap "config-service7" deleted
+        deployment.apps "service7" deleted
+        service "service7" deleted
+        configmap "config-service8" deleted
+        deployment.apps "service8" deleted
+        service "service8" deleted
+        configmap "config-service9" deleted
+        deployment.apps "service9" deleted
+        service "service9" deleted

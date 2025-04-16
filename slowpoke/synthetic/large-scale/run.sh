@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change this!!
-target_service_random_pairs="0:29796" # Make it reproducible
+target_service_random_pairs="4:29796" # Make it reproducible
 
 cd $(dirname $0)/../..
 
@@ -11,10 +11,10 @@ mkdir -p $DIR
 
 # config
 THREAD=8
-CONN=512
-NUM_REQ=10000
+CONN=128
+NUM_REQ=20000
 POKER_BATCH_REQ=100
-NUM_EXP=2
+NUM_EXP=10
 REPETITION=5
 
 for pair in $target_service_random_pairs
@@ -22,7 +22,7 @@ do
     target_service=$(echo $pair | cut -d':' -f1)
     random_seed=$(echo $pair | cut -d':' -f2)
 
-    output_file=$DIR/$EXP-service$target_service-t$THREAD-c$CONN-req$NUM_REQ-poker_batch_req$POKER_BATCH_REQ-n$NUM_EXP-rep$REPETITION-all-0-except-service0-600-sync.log
+    output_file=$DIR/$EXP-service$target_service-t$THREAD-c$CONN-req$NUM_REQ-poker_batch_req$POKER_BATCH_REQ-n$NUM_EXP-rep$REPETITION.log
     
     if [[ -e $output_file ]]; then
         echo "File $output_file already exists. Skipping..."

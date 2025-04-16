@@ -27,7 +27,7 @@ spec:
                 version: ""
             annotations: {}
         spec:
-            nodeName: worker9
+            nodeName: worker38
             containers:
                 - name: app
                   image: yizhengx/mucache:synthetic-pokerpp-0maxconn
