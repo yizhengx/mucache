@@ -174,21 +174,23 @@ func SlowpokeInit() {
 		return
 	}
 
-	// recover_pipefile, err = os.OpenFile(fifo_recover_path, os.O_RDONLY, os.ModeNamedPipe)
-	// if err != nil {
-	// 	fmt.Println("[slowpoke/utils.go] Error opening recover pipefile with name :", fifo_recover_path, err)
-	// 	return
-	// }
+	recover_pipefile, err = os.OpenFile(fifo_recover_path, os.O_RDONLY, os.ModeNamedPipe)
+	if err != nil {
+		fmt.Println("[slowpoke/utils.go] Error opening recover pipefile with name :", fifo_recover_path, err)
+		return
+	}
 
-	// _, err = recover_pipefile.Read(pipe_recv_buf);
-	// for {
-	// 	if err == nil {
-	// 		break
-	// 	}
-	// 	fmt.Println("[slowpoke/utils.go] Error reading from pipe:", err)
-	// 	os.Stdout.Sync()
-	// 	_, err = recover_pipefile.Read(pipe_recv_buf);
-	// }
+	_, err = recover_pipefile.Read(pipe_recv_buf);
+	for {
+		if err == nil {
+			break
+		}
+		fmt.Println("[slowpoke/utils.go] Error reading from pipe:", err)
+		os.Stdout.Sync()
+		_, err = recover_pipefile.Read(pipe_recv_buf);
+	}
+
+	go standby_delay()
 
 	// go startControlServer()
 
@@ -205,6 +207,33 @@ func SlowpokeInit() {
 			printCountersSyncMap()
 		}
 	}()
+}
+
+func standby_delay() {
+	for {
+		_, err := recover_pipefile.Read(pipe_recv_buf);
+		if err != nil {
+			fmt.Println("[slowpoke/utils.go] Error reading from pipe:", err)
+			os.Stdout.Sync()
+			panic("pipe")
+		}
+		sync_guard.Lock()
+		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
+		_, err = pipefile.Write(pipebuf);
+		if err != nil {
+			fmt.Println("[slowpoke/utils.go] Error writing to pipe:", err)
+			os.Stdout.Sync()
+		}
+		reqcount = 0
+		accumulatedDelay = 0
+		_, err = recover_pipefile.Read(pipe_recv_buf);
+		if err != nil {
+			fmt.Println("[slowpoke/utils.go] Error reading from pipe:", err)
+			os.Stdout.Sync()
+			panic("pipe")
+		}
+		sync_guard.Unlock()
+	}
 }
 
 // Get the amount of time in nanoseconds the calling thread has spent using the CPU since startup

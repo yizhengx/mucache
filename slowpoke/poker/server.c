@@ -20,6 +20,7 @@
 #define POKER_PORT_STR "5550"
 #define FIFO_PATH "/tmp/slowpoke_fifo"
 #define FIFO_RECOVER_PATH "/tmp/slowpoke_fifo_recover"
+#define FIFO_RELAY_PATH "/tmp/slowpoke_fifo_relay"
 #define DEBUG 0
 
 int* neighbor_conns = NULL;
@@ -30,6 +31,8 @@ typedef struct {
     int64_t delay_nanos;
 } poker_message;
 int poker_phase = 0;
+int fifo_fd = -1;
+int fifo_recovery_fd = -1;
 pthread_mutex_t poker_phase_lock = PTHREAD_MUTEX_INITIALIZER;
 int64_t accumulated_nano_sleep = 0;
 // pthread_mutex_t accumulated_nano_sleep_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -153,12 +156,26 @@ void precise_sleep(long long sleep_ns) {
     /* printf("done sleeping, surplus %lld\n", sleep_surplus); */
 }
 
-void* do_delay(int64_t nanosleep, pid_t child_pgid) {
+void* do_delay(pid_t child_pgid) {
     pthread_mutex_lock(&poker_phase_lock);
     if (DEBUG) {
-        printf("do_delay: nanosleep=%lld, child_pgid=%d\n", nanosleep, child_pgid);
+        printf("Start do_delay: child_pgid=%d, accumulated_nano_sleep=%lld\n", child_pgid, accumulated_nano_sleep);
         fflush(stdout);
     }
+    // write to pipe_fifo_fd to ask for delay
+    char send_buf[8];
+    if (write(fifo_recovery_fd, send_buf, sizeof(send_buf)) == -1) {
+        perror("write");
+        pthread_exit(NULL);
+    }
+    if (DEBUG) {
+        printf("Waiting for delay: child_pgid=%d, accumulated_nano_sleep=%lld\n", child_pgid, accumulated_nano_sleep);
+        fflush(stdout);
+    }
+    char read_buf[256];
+    ssize_t bytes_read = read(fifo_fd, read_buf, sizeof(read_buf) - 1);
+    int64_t nanosleep = *(int64_t *)(&read_buf[0]);
+    // read from fifo_fd to get the delay
     accumulated_nano_sleep += nanosleep;
     fflush(stdout);
     int64_t start_time = get_current_time_ns();
@@ -171,10 +188,28 @@ void* do_delay(int64_t nanosleep, pid_t child_pgid) {
     precise_sleep(accumulated_nano_sleep);
     int64_t end_time = get_current_time_ns();
     accumulated_nano_sleep -= (end_time - start_time);
+    if (DEBUG) {
+        printf("Finish do_delay: nanosleep=%lld, child_pgid=%d, end_time=%lld\n", nanosleep, child_pgid, end_time);
+        fflush(stdout);
+    }
+    // notify the app to continue working
+    if (write(fifo_recovery_fd, send_buf, sizeof(send_buf)) == -1) {
+        perror("write");
+        pthread_exit(NULL);
+    }
+    if (DEBUG) {
+        printf("Finish sending message do_delay: nanosleep=%lld, child_pgid=%d, end_time=%lld\n", nanosleep, child_pgid, end_time);
+        fflush(stdout);
+    }
     if (kill(-child_pgid, SIGCONT) == -1) {
         printf("error in conting");
         fflush(stdout);
     }
+    if (DEBUG) {
+        printf("Finish sending signal do_delay: nanosleep=%lld, child_pgid=%d, end_time=%lld\n", nanosleep, child_pgid, end_time);
+        fflush(stdout);
+    }
+
     // printf("[after] accumulated_nano_sleep: %lld, end_time: %lld\n", accumulated_nano_sleep, end_time);
     pthread_mutex_unlock(&poker_phase_lock);
 }
@@ -202,7 +237,7 @@ void* handle_client(void* arg) {
         if (!phase_seen) {
             // Do the delay
             propagate_poker_message_to_neighbors(&msg);
-            do_delay(msg.delay_nanos, child_pgid);
+            do_delay(child_pgid);
         }
 
     }
@@ -572,7 +607,8 @@ void *poker(void *arg) {
     // open the tcp server for all neighbors
     register_neighbors();
 
-    int fifo_fd = open(FIFO_PATH, O_RDONLY | O_NONBLOCK);
+    pthread_mutex_lock(&poker_phase_lock);
+    fifo_fd = open(FIFO_PATH, O_RDONLY | O_NONBLOCK);
     int is_blocking = 0;
     char buffer[256];
     if (fifo_fd == -1) {
@@ -580,8 +616,27 @@ void *poker(void *arg) {
         pthread_exit(NULL);
     }
 
+    fifo_recovery_fd = open(FIFO_RECOVER_PATH, O_WRONLY);
+    if (fifo_recovery_fd == -1) {
+        perror("open");
+        pthread_exit(NULL);
+    }
+
+    pthread_mutex_unlock(&poker_phase_lock);
     char send_buf[8];
 
+    char *neighbors_env = getenv("SLOWPOKE_IS_TARGET_SERVICE");
+    if (!neighbors_env) {
+        fprintf(stderr, "[poker] Environment variable SLOWPOKE_IS_TARGET_SERVICE not found\n");
+        fflush(stderr);
+        pthread_exit(NULL);
+    }
+    int is_target_service = 0;
+    if (strcmp(neighbors_env, "true") == 0) {
+        is_target_service = 1;
+    }
+
+    // This is for target service
     while (1) {
         // Attempt to read from the FIFO
         ssize_t bytes_read = read(fifo_fd, buffer, sizeof(buffer) - 1);
@@ -593,6 +648,7 @@ void *poker(void *arg) {
         } else {
             // Null-terminate the message and print it
             if (!is_blocking) {
+                // For the start-up to make sure fifos are open to communication
                 is_blocking = 1;
                 int flags = fcntl(fifo_fd, F_GETFL, 0);
                 if (flags == -1) {
@@ -602,6 +658,18 @@ void *poker(void *arg) {
                 if (fcntl(fifo_fd, F_SETFL, flags & ~O_NONBLOCK) == -1) {
                     perror("fcntl(F_SETFL)");
                     pthread_exit(NULL);
+                }
+                if (write(fifo_recovery_fd, send_buf, sizeof(send_buf)) == -1) {
+                    perror("write");
+                    pthread_exit(NULL);
+                }
+                if (!is_target_service) {
+                    // if not target service, we shouldn't listen to the delay here, but in do_delay
+                    if (DEBUG) {
+                        fprintf(stdout, "[poker] Not target service, quit listening to the delay\n");
+                        fflush(stdout);
+                    }
+                    break;
                 }
                 continue;
             }
@@ -625,6 +693,17 @@ void *poker(void *arg) {
         if (child_exited) {
             break;
         }
+    }
+
+    // Wait for the thread to exit
+    if (pthread_join(tcp_thread, NULL) != 0) {
+        perror("Failed to join thread");
+        exit(1);
+    }
+
+    if (DEBUG) {
+        printf("[poker] TCP server thread joined\n");
+        fflush(stdout);
     }
 
     close(fifo_fd);
