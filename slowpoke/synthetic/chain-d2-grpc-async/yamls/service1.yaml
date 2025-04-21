@@ -30,7 +30,7 @@ spec:
             nodeName: worker2
             containers:
                 - name: app
-                  image: docker.io/yizhengx/mucache-pokerpp-opt
+                  image: yizhengx/mucache:pokerpp-opt
                   imagePullPolicy: Always
                   env:
                     - name: APP_NAME

@@ -30,7 +30,7 @@ spec:
             nodeName: worker8
             containers:
                 - name: app
-                  image: yizhengx/mucache-pokerpp-opt
+                  image: yizhengx/mucache:pokerpp-opt
                   imagePullPolicy: Always
                   env:
                     - name: APP_NAME
