@@ -35,6 +35,7 @@ class Runner:
         self.target_processing_time_range = [0, self.baseline_service_processing_time[self.target_service]]
         self.baseline_throughputs = []
         self.poker_batch = args.poker_batch
+        self.neighbors = config.get_neighbors(self.benchmark, self.request)
     
     def get_env_for_print(self, env):
         env_p = {}
@@ -74,6 +75,7 @@ class Runner:
                 env[f"SLOWPOKE_IS_TARGET_SERVICE_{service.upper()}"] = "true"
             else:
                 env[f"SLOWPOKE_IS_TARGET_SERVICE_{service.upper()}"] = "false"
+            env[f"SLOWPOKE_NEIGHBORS_{service.upper()}"] = self.neighbors[service]
         if self.pre_run:
             env["SLOWPOKE_PRERUN"] = "true" # Disable request counting during normal execution
         cmd = f"bash run.sh {self.benchmark} {self.request_type} {self.num_threads} {self.num_conns} {self.num_req}"

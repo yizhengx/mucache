@@ -6,7 +6,7 @@ target_service_random_pairs="0:9175 3:25910 5:365" # Make it reproducible
 cd $(dirname $0)/../..
 
 EXP=$(dirname $0 | xargs basename)
-DIR=synthetic/$EXP/04-09-pokerpp-rm-deadlock-0maxconn
+DIR=synthetic/$EXP/04-21-pokerpp-opt
 mkdir -p $DIR
 
 # config

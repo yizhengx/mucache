@@ -22,6 +22,8 @@ for dir in ./*; do
     #     fi
     # done
 
+    sed -i 's|04-09-pokerpp-rm-deadlock-0maxconn|04-21-pokerpp-opt|g' run.sh
+
     # Loop through each serviceX.yaml file
     cd yamls || continue
     for yaml in *; do
@@ -47,8 +49,10 @@ for dir in ./*; do
         # ' "$yaml" | sed 's|yizhengx/mucache:synthetic-pokerpp-0maxconn-grpc|yizhengx/mucache-pokerpp-opt|g' | sed 's|yizhengx/mucache:synthetic-pokerpp-0maxconn|yizhengx/mucache-pokerpp-opt|g' > tmp.yaml && mv tmp.yaml "$yaml"
         # sed 's|yizhengx/mucache-pokerpp-opt|yizhengx/mucache:pokerpp-opt|g' "$yaml" | sed 's|yizhengx/mucache:synthetic-pokerpp-0maxconn|yizhengx/mucache-pokerpp-opt|g' > tmp.yaml && mv tmp.yaml "$yaml"
         # docker.io/
-        sed 's|docker.io/||g' "$yaml" > tmp.yaml && mv tmp.yaml "$yaml"
+        # sed 's|docker.io/||g' "$yaml" > tmp.yaml && mv tmp.yaml "$yaml"
     done
+
+
 
     cd ../..
 done

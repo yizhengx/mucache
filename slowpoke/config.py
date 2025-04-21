@@ -40,89 +40,89 @@ leaf_nodes = {
 
 neighbors = {
     "chain-d2": {
-        "service0": ["service1"],
-        "service1": ["service0", "service2"],
-        "service2": ["service1"]
+        "service0": "service1",
+        "service1": "service0:service2",
+        "service2": "service1"
     },
     "chain-d8": {
-        "service0": ["service1"],
-        "service1": ["service0", "service2"],
-        "service2": ["service1", "service3"],
-        "service3": ["service2", "service4"],
-        "service4": ["service3", "service5"],
-        "service5": ["service4", "service6"],
-        "service6": ["service5", "service7"],
-        "service7": ["service6"]
+        "service0": "service1",
+        "service1": "service0:service2",
+        "service2": "service1:service3",
+        "service3": "service2:service4",
+        "service4": "service3:service5",
+        "service5": "service4:service6",
+        "service6": "service5:service7",
+        "service7": "service6"
     },
     "fanout-w3": {
-        "service0": ["service1", "service2", "service3"],
-        "service1": ["service0"],
-        "service2": ["service0"],
-        "service3": ["service0"]
+        "service0": "service1:service2:service3",
+        "service1": "service0",
+        "service2": "service0",
+        "service3": "service0"
     },
     "fanout-w7": {
-        "service0": ["service1", "service2", "service3", "service4", "service5", "service6", "service7"],
-        "service1": ["service0"],
-        "service2": ["service0"],
-        "service3": ["service0"],
-        "service4": ["service0"],
-        "service5": ["service0"],
-        "service6": ["service0"],
-        "service7": ["service0"]
+        "service0": "service1:service2:service3:service4:service5:service6:service7",
+        "service1": "service0",
+        "service2": "service0",
+        "service3": "service0",
+        "service4": "service0",
+        "service5": "service0",
+        "service6": "service0",
+        "service7": "service0"
     },
     "dag-unbalanced": {
-        :"service0": ["service1", "service2", "service3"],
-        "service1": ["service0"],
-        "service2": ["service0", "service4"],
-        "service3": ["service0", "service5", "service6"],
-        "service4": ["service2"],
-        "service5": ["service3", "service7"],
-        "service6": ["service3"],
-        "service7": ["service5"]
+        :"service0": "service1:service2:service3",
+        "service1": "service0",
+        "service2": "service0:service4",
+        "service3": "service0:service5:service6",
+        "service4": "service2",
+        "service5": "service3:service7",
+        "service6": "service3",
+        "service7": "service5"
     },
     "dag-cross": {
-        "service0": ["service1", "service2", "service3", "service4"],
-        "service1": ["service0", "service4"],
-        "service2": ["service0", "service3", "service4"],
-        "service3": ["service0", "service2"],
-        "service4": ["service0", "service1", "service2"]
+        "service0": "service1:service2:service3:service4",
+        "service1": "service0:service4",
+        "service2": "service0:service3:service4",
+        "service3": "service0:service2",
+        "service4": "service0:service1:service2"
     },
     "dag-relay": {
-        "service0": ["service1", "service2", "service3"],
-        "service1": ["service0", "service4"],
-        "service2": ["service0", "service4"],
-        "service3": ["service0", "service4"],
-        "service4": ["service1", "service2", "service3", "service5", "service6"],
-        "service5": ["service4"],
-        "service6": ["service4"]
+        "service0": "service1:service2:service3",
+        "service1": "service0:service4",
+        "service2": "service0:service4",
+        "service3": "service0:service4",
+        "service4": "service1:service2:service3:service5:service6",
+        "service5": "service4",
+        "service6": "service4"
     },
     "dynamic-cache": {
-        "service0": ["service1"],
-        "service1": ["service0", "service2"],
-        "service2": ["service1"],
+        "service0": "service1",
+        "service1": "service0:service2",
+        "service2": "service1",
     },
     "dynamic-cycle": {
-        "service0": ["service1"],
-        "service1": ["service0", "service2", "service3", "service4"],
-        "service2": ["service1"],
-        "service3": ["service1"],
-        "service4": ["service1"]
+        "service0": "service1",
+        "service1": "service0:service2:service3:service4",
+        "service2": "service1",
+        "service3": "service1",
+        "service4": "service1"
     },
     "dynamic-once": {
-        "service0": ["service1"],
-        "service1": ["service0", "service2", "service3"],
-        "service2": ["service1", "service4"],
-        "service3": ["service1"],
-        "service4": ["service2"]
+        "service0": "service1",
+        "service1": "service0:service2:service3",
+        "service2": "service1:service4",
+        "service3": "service1",
+        "service4": "service2"
     },
     "dynamic-twice": {
-        "service0": ["service1", "service2", "service3"],
-        "service1": ["service0", "service4"],
-        "service2": ["service0"],
-        "service3": ["service0", "service5", "service6"],
-        "service4": ["service1"],
-        "service5": ["service3"],
-        "service6": ["service3"]
+        "service0": "service1:service2:service3",
+        "service1": "service0:service4",
+        "service2": "service0",
+        "service3": "service0:service5:service6",
+        "service4": "service1",
+        "service5": "service3",
+        "service6": "service3"
     }
 }
 
@@ -350,3 +350,9 @@ def get_cpu_quota_synthetic(request):
     for i in range(num):
         cpu_quota[f"service{i}"] = 2
     return cpu_quota
+
+def get_neighbos(benchmark, request):
+    if benchmark == "synthetic":
+        return neighbors[request]
+    else:
+        return {}
