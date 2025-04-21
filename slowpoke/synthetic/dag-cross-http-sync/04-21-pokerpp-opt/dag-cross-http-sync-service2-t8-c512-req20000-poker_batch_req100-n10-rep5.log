@@ -31,6 +31,22 @@ neighbors                        : {'service0': 'service1:service2:service3:serv
     [exp] Executing cmd `bash run.sh synthetic dag-cross-http-sync 8 512 20000`:
         [run.sh] Running benchmark synthetic with request dag-cross-http-sync, thread 8, conn 512, duration 60
         [run.sh] Deleting all services
+        configmap "config-service0" deleted
+        deployment.apps "service0" deleted
+        service "service0" deleted
+        configmap "config-service1" deleted
+        deployment.apps "service1" deleted
+        service "service1" deleted
+        configmap "config-service2" deleted
+        deployment.apps "service2" deleted
+        service "service2" deleted
+        configmap "config-service3" deleted
+        deployment.apps "service3" deleted
+        service "service3" deleted
+        configmap "config-service4" deleted
+        deployment.apps "service4" deleted
+        service "service4" deleted
+        deployment.apps "ubuntu-client" deleted
         [run.sh] Waiting for all pods to be deleted
         [run.sh] Deploying all services
         configmap/config-service0 created

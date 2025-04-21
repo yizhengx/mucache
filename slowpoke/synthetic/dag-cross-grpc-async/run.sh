@@ -2,7 +2,7 @@
 
 # Change this!!
 # 2:16181 3:23541 4:16181
-target_service_random_pairs="2:16181" # Make it reproducible
+target_service_random_pairs="2:16181 3:23541 4:16181" # Make it reproducible
 
 cd $(dirname $0)/../..
 
@@ -15,7 +15,7 @@ THREAD=8
 CONN=512
 NUM_REQ=20000
 POKER_BATCH_REQ=100
-NUM_EXP=10
+NUM_EXP=2
 REPETITION=5
 
 for pair in $target_service_random_pairs
