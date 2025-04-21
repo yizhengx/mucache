@@ -35,7 +35,7 @@ class Runner:
         self.target_processing_time_range = [0, self.baseline_service_processing_time[self.target_service]]
         self.baseline_throughputs = []
         self.poker_batch = args.poker_batch
-        self.neighbors = config.get_neighbors(self.benchmark, self.request)
+        self.neighbors = config.get_neighbors(self.benchmark, self.request_type)
     
     def get_env_for_print(self, env):
         env_p = {}

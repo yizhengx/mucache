@@ -71,7 +71,7 @@ neighbors = {
         "service7": "service0"
     },
     "dag-unbalanced": {
-        :"service0": "service1:service2:service3",
+        "service0": "service1:service2:service3",
         "service1": "service0",
         "service2": "service0:service4",
         "service3": "service0:service5:service6",
@@ -275,12 +275,12 @@ def get_baseline_service_processing_time_synthetic(target, request, random_seed)
     random_numbers.sort()
     print(f"[config.py] Random numbers for execution time: {random_numbers}")
     # use the random number to also decide if we want the target service is the bottleneck
-    is_bottleneck = random.choice([True, False])
+    is_bottleneck = random.choice([True,True,False])
     print(f"[config.py] Is bottleneck: {is_bottleneck}")
-    picked_service = target_service
+    picked_service = target
     if not is_bottleneck:
         # pick a random service that is not the target service
-        while picked_service == target_service:
+        while picked_service == target:
             picked_service = f"service{random.randint(0, num-1)}"
     processing_time = {}
     picked_idx = int(picked_service.replace("service", ""))
@@ -351,8 +351,9 @@ def get_cpu_quota_synthetic(request):
         cpu_quota[f"service{i}"] = 2
     return cpu_quota
 
-def get_neighbos(benchmark, request):
+def get_neighbors(benchmark, request):
     if benchmark == "synthetic":
-        return neighbors[request]
+        topology = "-".join(request.split("-")[:2])
+        return neighbors[topology]
     else:
         return {}
