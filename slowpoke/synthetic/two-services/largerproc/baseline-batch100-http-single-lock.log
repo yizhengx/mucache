@@ -1,0 +1,22 @@
+Running 40s test @ http://service0:80/endpoint1
+  8 threads and 512 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   951.51ms  949.62ms   7.78s    87.35%
+    Req/Sec    80.51     38.07   313.00     65.54%
+  Latency Distribution
+     50%  688.59ms
+     75%    1.06s 
+     90%    2.30s 
+     99%    4.39s 
+  20000 requests in 40.00s, 3.03MB read
+Requests/sec:    500.00
+Transfer/sec:     77.64KB
+------------------------------
+stop time: 30.501613
+stop time: 29.313422
+stop time: 31.381027
+stop time: 31.991991
+stop time: 32.178486
+stop time: 31.441412
+stop time: 31.921581
+stop time: 32.226665

@@ -112,14 +112,15 @@ class Runner:
         processing_time_range = list(range(self.target_processing_time_range[0], int(self.target_processing_time_range[1]), int(processing_time_diff//self.target_num_exp)))[:self.target_num_exp]
         print(f"[test.py] Actual processing time range: {processing_time_range}")
 
-        # baseline
-        print(f"[test.py] Running baseline experiment", flush=True)
-        baseline_throughput = self.exp(service_delay, processing_time)
-        while baseline_throughput == 0:
-            print("[test.py] Found 0 throughput, rerun experiment")
-            baseline_throughput = self.exp(service_delay, processing_time)
-        print(f"[test.py] Baseline throughput: {baseline_throughput}", flush=True)
-        self.baseline_throughputs.append(baseline_throughput)
+        # # baseline
+        # print(f"[test.py] Running baseline experiment", flush=True)
+        # baseline_throughput = self.exp(service_delay, processing_time)
+        # while baseline_throughput == 0:
+        #     print("[test.py] Found 0 throughput, rerun experiment")
+        #     baseline_throughput = self.exp(service_delay, processing_time)
+        # print(f"[test.py] Baseline throughput: {baseline_throughput}", flush=True)
+        # self.baseline_throughputs.append(baseline_throughput)
+        self.baseline_throughputs.append(1160)
 
         slowdown = []
         groundtruth = []
@@ -129,15 +130,16 @@ class Runner:
         for i, p_t in enumerate(processing_time_range):
             print(f"[test.py] Running {i}th optmization experiment", flush=True)
 
-            print(f"[test.py] Running {i}th groundtruth exp", flush=True)
-            processing_time[self.target_service] = p_t
-            for service in service_delay:
-                service_delay[service] = 0
-            res = self.exp(service_delay, processing_time)
-            while int(res) == 0:
-                print("[test.py] Found 0 throughtput, rerun experiment")
-                res = self.exp(service_delay, processing_time)
-            groundtruth.append(res)
+            # print(f"[test.py] Running {i}th groundtruth exp", flush=True)
+            # processing_time[self.target_service] = p_t
+            # for service in service_delay:
+            #     service_delay[service] = 0
+            # res = self.exp(service_delay, processing_time)
+            # while int(res) == 0:
+            #     print("[test.py] Found 0 throughtput, rerun experiment")
+            #     res = self.exp(service_delay, processing_time)
+            # groundtruth.append(res)
+            groundtruth.append(1160)
 
             print(f"[test.py] Running {i}th slowdown exp", flush=True)
             processing_time[self.target_service] = self.baseline_service_processing_time[self.target_service]
@@ -150,6 +152,10 @@ class Runner:
                             ((self.target_processing_time_range[1] - p_t)*self.request_ratio[self.target_service])*self.cpu_quota[service] / (self.request_ratio[service]*self.cpu_quota[self.target_service])
                         )
                     service_delay[service] = delay
+                else:
+                    service_delay[service] = int(
+                            ((self.target_processing_time_range[1] - p_t))
+                        )
             res = self.exp(service_delay, processing_time, self.target_processing_time_range[1] - p_t)
             while int(res) == 0:
                 print("[test.py] Found 0 throughput, rerun experiment")

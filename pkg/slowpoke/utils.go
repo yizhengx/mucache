@@ -73,7 +73,7 @@ func printCountersSyncMap() {
 		counterInt, ok2 := counter.(int)
 
 		if !ok1 || !ok2 {
-			fmt.Println("Invalid type in sync.Map") // Prevent panic
+			fmt.Println("[slowpoke/utils.go] Invalid type in sync.Map") // Prevent panic
 			return true
 		}
 
@@ -106,84 +106,91 @@ func printCountersSyncMap() {
 }
 
 func SlowpokeInit() {
+
 	delayMicros := -1
 	if env, ok := os.LookupEnv("SLOWPOKE_DELAY_MICROS"); ok {
 		fmt.Sscanf(env, "%d", &delayMicros)
-		fmt.Printf("SLOWPOKE_DELAY_MICROS=%d\n", delayMicros)
 		delayNanos = int64(delayMicros) * int64(1000);
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_DELAY_MICROS=%d\n", delayMicros)
+
 	processingMicros = -1
 	if env, ok := os.LookupEnv("SLOWPOKE_PROCESSING_MICROS"); ok {
 		fmt.Sscanf(env, "%d", &processingMicros)
-		fmt.Printf("SLOWPOKE_PROCESSING_MICROS=%d\n", processingMicros)
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_PROCESSING_MICROS=%d\n", processingMicros)
+
 	prerun = false
 	if env, ok := os.LookupEnv("SLOWPOKE_PRERUN"); ok {
 		if env == "true" {
 			prerun = true
 		}
-		fmt.Printf("SLOWPOKE_PRERUN=%t\n", prerun)
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_PRERUN=%t\n", prerun)
+
 	pokerBatchThreshold = 20000000
 	if env, ok := os.LookupEnv("SLOWPOKE_POKER_BATCH_THRESHOLD"); ok {
 		fmt.Sscanf(env, "%d", &pokerBatchThreshold)
-		fmt.Printf("SLOWPOKE_POKER_BATCH_THRESHOLD=%d\n", pokerBatchThreshold)
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_POKER_BATCH_THRESHOLD=%d\n", pokerBatchThreshold)
+
+	servName = ""
 	if env, ok := os.LookupEnv("SLOWPOKE_SERV_NAME"); ok {
 		servName = strings.TrimSpace(env)
-		fmt.Printf("SLOWPOKE_SERV_NAME=%s\n", servName)
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_SERV_NAME=%s\n", servName)
+
 	isTarget = false
 	if env, ok := os.LookupEnv("SLOWPOKE_IS_TARGET_SERVICE"); ok {
 		if env == "true" {
 			isTarget = true
 		} 
-		fmt.Printf("env=%s\n", env)
 	}
-	fmt.Printf("SLOWPOKE_IS_TARGET_SERVICE=%b\n", isTarget)
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_IS_TARGET_SERVICE=%b\n", isTarget)
 
 	var fifo_path string;
-	var fifo_recover_path string;
-	var ok bool;
-	if fifo_path, ok = os.LookupEnv("SLOWPOKE_FIFO_PATH"); ok {
-		fmt.Printf("SLOWPOKE_FIFO=%s\n", fifo_path)
+	if env, ok := os.LookupEnv("SLOWPOKE_FIFO_PATH"); ok {
+		fifo_path = strings.TrimSpace(env)
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_FIFO=%s\n", fifo_path)
 
-	if fifo_recover_path, ok = os.LookupEnv("SLOWPOKE_FIFO_RECOVER_PATH"); ok {
-		fmt.Printf("SLOWPOKE_FIFO_RECOVER=%s\n", fifo_recover_path)
+	var fifo_recover_path string;
+	if env, ok := os.LookupEnv("SLOWPOKE_FIFO_RECOVER_PATH"); ok {
+		fifo_recover_path = env
 	}
+	fmt.Printf("[slowpoke/utils.go] SLOWPOKE_FIFO_RECOVER=%s\n", fifo_recover_path)
 
 	var err error
 	pipefile, err = os.OpenFile(fifo_path, os.O_WRONLY, os.ModeNamedPipe)
 	if err != nil {
-		fmt.Println("Error opening pipefile:", err)
+		fmt.Println("[slowpoke/utils.go] Error opening pipefile:", err)
 		return
 	}
 	binary.LittleEndian.PutUint64(pipebuf, uint64(0))
 	_, err = pipefile.Write(pipebuf);
 	if err != nil {
-		fmt.Println("Error writing to pipe:", err)
+		fmt.Println("[slowpoke/utils.go] Error writing to pipe:", err)
 		os.Stdout.Sync()
 		return
 	}
 
-	recover_pipefile, err = os.OpenFile(fifo_recover_path, os.O_RDONLY, os.ModeNamedPipe)
-	if err != nil {
-		fmt.Println("Error opening recover pipefile with name :", fifo_recover_path, err)
-		return
-	}
+	// recover_pipefile, err = os.OpenFile(fifo_recover_path, os.O_RDONLY, os.ModeNamedPipe)
+	// if err != nil {
+	// 	fmt.Println("[slowpoke/utils.go] Error opening recover pipefile with name :", fifo_recover_path, err)
+	// 	return
+	// }
 
-	_, err = recover_pipefile.Read(pipe_recv_buf);
-	for {
-		if err == nil {
-			break
-		}
-		fmt.Println("Error reading from pipe:", err)
-		os.Stdout.Sync()
-		_, err = recover_pipefile.Read(pipe_recv_buf);
-	}
+	// _, err = recover_pipefile.Read(pipe_recv_buf);
+	// for {
+	// 	if err == nil {
+	// 		break
+	// 	}
+	// 	fmt.Println("[slowpoke/utils.go] Error reading from pipe:", err)
+	// 	os.Stdout.Sync()
+	// 	_, err = recover_pipefile.Read(pipe_recv_buf);
+	// }
 
-	go startControlServer()
+	// go startControlServer()
 
 	if !prerun {
 		return
@@ -213,12 +220,17 @@ func SlowpokePokerPPDelay() {
 	accumulatedDelay += delayNanos
 	reqcount += 1
 	if isTarget && int64(reqcount) > pokerBatchThreshold {
-		// fmt.Printf("[%s][SlowpokePokerPPDelay] reqcout %d, sleepPhase %d \n", time.Now().Format(time.RFC3339), reqcount, sleepPhase + 1)
-		// os.Stdout.Sync()  
-		pauseReq := PauseReq{Phase: sleepPhase + 1}
-		sync_guard.Unlock()
-		handlePause(pauseReq)
-		return
+		// pauseReq := PauseReq{Phase: sleepPhase + 1}
+		// sync_guard.Unlock()
+		// handlePause(pauseReq)
+		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
+		_, err := pipefile.Write(pipebuf);
+		if err != nil {
+			fmt.Println("[slowpoke/utils.go] Error writing to pipe:", err)
+			os.Stdout.Sync()
+		}
+		reqcount = 0
+		accumulatedDelay = 0
 	}
 	sync_guard.Unlock()
 }
@@ -229,17 +241,14 @@ func SlowpokeDoDelay(delayToDo int64) {
 	binary.LittleEndian.PutUint64(pipebuf, uint64(delayToDo))
 	_, err := pipefile.Write(pipebuf);
 	if err != nil {
-		fmt.Println("Error writing to pipe:", err)
+		fmt.Println("[slowpoke/utils.go] Error writing to pipe:", err)
 		os.Stdout.Sync()
 		return
 	}
-	// fmt.Printf("sleeping for: %d [%s]\n", delayToDo, time.Now().Format(time.RFC3339))
-	// os.Stdout.Sync()  
-
 	// time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
 	_, err = recover_pipefile.Read(pipe_recv_buf);
 	if err != nil {
-		fmt.Println("Error reading from pipe:", err)
+		fmt.Println("[slowpoke/utils.go] Error reading from pipe:", err)
 		os.Stdout.Sync()
 		panic("pipe")
 	}
@@ -247,15 +256,7 @@ func SlowpokeDoDelay(delayToDo int64) {
 }
 
 func SlowpokeCheck(serviceFuncName string) {
-	// // Record request
-	// if _, ok := requestCounters[unix.Gettid()]; !ok {
-	// 	requestCounters[unix.Gettid()] = make(map[string]int)
-	// }
-	// if _, ok := requestCounters[unix.Gettid()][serviceFuncName]; !ok {
-	// 	requestCounters[unix.Gettid()][serviceFuncName] = 0
-	// }
-	// requestCounters[unix.Gettid()][serviceFuncName]++
-
+	// Count the number of requests
 	if prerun{
 		// Record request
 		counter, _ := requestCounters.LoadOrStore(serviceFuncName, 0)
@@ -271,10 +272,9 @@ func SlowpokeCheck(serviceFuncName string) {
 		}
 	}
 
-	// Process
+	// Process - busy spinning
 	lockThread := true
 	if processingMicros >= 0 {
-		// Threads need to be locked because otherwise util.ThreadCPUTime() can change in the middle of execution
 		takenSurplus := atomic.SwapInt64(&sleepSurplus, 0);
 		sleepTime := int64(processingMicros*1000.0);
 		common := min(takenSurplus, sleepTime);
@@ -302,89 +302,6 @@ func SlowpokeCheck(serviceFuncName string) {
 	}
 }
 
-func SlowpokeDelay() {
-	sync_guard.Lock()
-	accumulatedDelay += delayNanos
-	reqCount++
-	// if reqCount >= 100 {
-	if accumulatedDelay > pokerBatchThreshold {
-		// fmt.Printf("[%s] Should sleep %d \n", time.Now().Format(time.RFC3339), accumulatedDelay)
-
-		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
-		_, err := pipefile.Write(pipebuf);
-		if err != nil {
-			fmt.Println("Error writing to pipe:", err)
-			os.Stdout.Sync()
-			return
-		}
-
-		// syscall.Syscall(syscall.SYS_SCHED_YIELD, 0, 0, 0) // Yield the CPU
-
-		// elapsed := time.Since(start)
-		// start = start.Add(elapsed)
-		// accumulatedDelay -= elapsed.Nanoseconds()
-		// for accumulatedDelay > 0 {
-		//       time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
-		//       elapsed = time.Since(start)
-		//       start = start.Add(elapsed)
-		//       accumulatedDelay -= elapsed.Nanoseconds()
-		// }
-
-		// time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
-		_, err = recover_pipefile.Read(pipe_recv_buf);
-		if err != nil {
-			fmt.Println("Error reading from pipe:", err)
-			os.Stdout.Sync()
-			return
-		}
-		accumulatedDelay = 0
-		reqCount = 0
-	}
-	sync_guard.Unlock()
-}
-
-func SlowpokeFlushDelay(flusher http.Flusher) {
-	sync_guard.Lock()
-	accumulatedDelay += delayNanos
-	reqCount++
-	// if accumulatedDelay > pokerBatchThreshold {
-	if reqCount >= 100 {
-		flusher.Flush()
-		
-		// start := time.Now()
-		binary.LittleEndian.PutUint64(pipebuf, uint64(accumulatedDelay))
-		_, err := pipefile.Write(pipebuf);
-		if err != nil {
-			fmt.Println("Error writing to pipe:", err)
-			os.Stdout.Sync()
-			return
-		}
-
-		// syscall.Syscall(syscall.SYS_SCHED_YIELD, 0, 0, 0) // Yield the CPU
-
-		// elapsed := time.Since(start)
-		// start = start.Add(elapsed)
-		// accumulatedDelay -= elapsed.Nanoseconds()
-		// for accumulatedDelay > 0 {
-		//       time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
-		//       elapsed = time.Since(start)
-		//       start = start.Add(elapsed)
-		//       accumulatedDelay -= elapsed.Nanoseconds()
-		// }
-
-		// time.Sleep(time.Duration(accumulatedDelay) * time.Nanosecond)
-		_, err = recover_pipefile.Read(pipe_recv_buf);
-		if err != nil {
-			fmt.Println("Error reading from pipe:", err)
-			os.Stdout.Sync()
-			return
-		}
-		accumulatedDelay = 0
-		reqCount = 0
-	}
-	sync_guard.Unlock()
-}
-
 // Saves the response to *res (also might save the result to cache if we are in upperbound baseline
 func performRequest[T interface{}](ctx context.Context, req *http.Request, res *T, app string, method string, argBytes []byte) {
 	resp, err := common.HTTPClient.Do(req)
@@ -397,9 +314,6 @@ func performRequest[T interface{}](ctx context.Context, req *http.Request, res *
 }
 
 func Invoke[T interface{}](ctx context.Context, app string, method string, input interface{}) T {
-	// sync_guard.RLock()
-	// sync_guard.RUnlock()
-	requestEndpointRegister(app)
 	buf, err := json.Marshal(input)
 	if err != nil {
 		panic(err)
@@ -411,11 +325,7 @@ func Invoke[T interface{}](ctx context.Context, app string, method string, input
 	if err != nil {
 		panic(err)
 	}
-	// sync_guard.RLock()
-	// sync_guard.RUnlock()
 	performRequest[T](ctx, req, &res, app, method, buf)
-	// sync_guard.RLock()
-	// sync_guard.RUnlock()
 	return res
 }
 
@@ -428,11 +338,6 @@ func InitGRPCConn(app string) *grpc.ClientConn {
 }
 
 func InvokeGRPC(ctx context.Context, app string, method string, input interface{}) string {
-	// sync_guard.RLock()
-	// sync_guard.RUnlock()
-
-	requestEndpointRegister(app)
-
 	var grpcConn *grpc.ClientConn
 
 	grpcConnLock.RLock()

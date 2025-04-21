@@ -7,7 +7,7 @@ target_service_random_pairs="4:21636" # Make it reproducible
 cd $(dirname $0)/../..
 
 EXP=$(dirname $0 | xargs basename)
-DIR=synthetic/$EXP/04-13-pokerpp-rm-deadlock-0maxconn
+DIR=synthetic/$EXP/04-20-pokerpp-opt
 mkdir -p $DIR
 
 # config
@@ -15,8 +15,8 @@ THREAD=8
 CONN=512
 NUM_REQ=20000
 POKER_BATCH_REQ=100
-NUM_EXP=10
-REPETITION=5
+NUM_EXP=1
+REPETITION=1
 
 for pair in $target_service_random_pairs
 do 
@@ -25,12 +25,12 @@ do
 
     output_file=$DIR/$EXP-service$target_service-t$THREAD-c$CONN-req$NUM_REQ-poker_batch_req$POKER_BATCH_REQ-n$NUM_EXP-rep$REPETITION.log
     
-    if [[ -e $output_file ]]; then
-        echo "File $output_file already exists. Skipping..."
-        continue
-    fi
+    # if [[ -e $output_file ]]; then
+    #     echo "File $output_file already exists. Skipping..."
+    #     continue
+    # fi
 
-    touch $output_file
+    # touch $output_file
     
     python3 test.py -b synthetic \
         -r $EXP \
@@ -42,5 +42,5 @@ do
         --random_seed $random_seed \
         --repetition $REPETITION \
         --poker_batch_req $POKER_BATCH_REQ \
-        >$output_file
+        # >$output_file
 done

@@ -1,0 +1,14 @@
+cd $(dirname $0)
+
+export PROCESSING_TIME_SERVICE0=0.0008
+export PROCESSING_TIME_SERVICE1=0.001
+export SLOWPOKE_DELAY_MICROS_SERVICE0=200
+export SLOWPOKE_POKER_BATCH_THRESHOLD_SERVICE0=100
+export SLOWPOKE_IS_TARGET_SERVICE_SERVICE0=true
+export SLOWPOKE_IS_TARGET_SERVICE_SERVICE1=false
+
+
+for file in ./yamls/*.yaml
+do 
+    envsubst < $file | kubectl apply -f -
+done

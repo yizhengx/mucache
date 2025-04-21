@@ -6,7 +6,7 @@ target_service_random_pairs="0:13976 1:9944 2:1762" # Make it reproducible
 cd $(dirname $0)/../..
 
 EXP=$(dirname $0 | xargs basename)
-DIR=synthetic/$EXP/04-09-pokerpp-rm-deadlock-0maxconn
+DIR=synthetic/$EXP/04-20-opt
 mkdir -p $DIR
 
 # config
@@ -14,8 +14,8 @@ THREAD=8
 CONN=512
 NUM_REQ=20000
 POKER_BATCH_REQ=100
-NUM_EXP=10
-REPETITION=5
+NUM_EXP=1
+REPETITION=1
 
 for pair in $target_service_random_pairs
 do 
@@ -29,7 +29,7 @@ do
         continue
     fi
 
-    touch $output_file
+    # touch $output_file
     
     python3 test.py -b synthetic \
         -r $EXP \
@@ -41,5 +41,5 @@ do
         --random_seed $random_seed \
         --repetition $REPETITION \
         --poker_batch_req $POKER_BATCH_REQ \
-        >$output_file
+        # >$output_file
 done
