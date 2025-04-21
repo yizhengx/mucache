@@ -38,6 +38,94 @@ leaf_nodes = {
     "dynamic-twice": [2,5,6]
 }
 
+neighbors = {
+    "chain-d2": {
+        "service0": ["service1"],
+        "service1": ["service0", "service2"],
+        "service2": ["service1"]
+    },
+    "chain-d8": {
+        "service0": ["service1"],
+        "service1": ["service0", "service2"],
+        "service2": ["service1", "service3"],
+        "service3": ["service2", "service4"],
+        "service4": ["service3", "service5"],
+        "service5": ["service4", "service6"],
+        "service6": ["service5", "service7"],
+        "service7": ["service6"]
+    },
+    "fanout-w3": {
+        "service0": ["service1", "service2", "service3"],
+        "service1": ["service0"],
+        "service2": ["service0"],
+        "service3": ["service0"]
+    },
+    "fanout-w7": {
+        "service0": ["service1", "service2", "service3", "service4", "service5", "service6", "service7"],
+        "service1": ["service0"],
+        "service2": ["service0"],
+        "service3": ["service0"],
+        "service4": ["service0"],
+        "service5": ["service0"],
+        "service6": ["service0"],
+        "service7": ["service0"]
+    },
+    "dag-unbalanced": {
+        :"service0": ["service1", "service2", "service3"],
+        "service1": ["service0"],
+        "service2": ["service0", "service4"],
+        "service3": ["service0", "service5", "service6"],
+        "service4": ["service2"],
+        "service5": ["service3", "service7"],
+        "service6": ["service3"],
+        "service7": ["service5"]
+    },
+    "dag-cross": {
+        "service0": ["service1", "service2", "service3", "service4"],
+        "service1": ["service0", "service4"],
+        "service2": ["service0", "service3", "service4"],
+        "service3": ["service0", "service2"],
+        "service4": ["service0", "service1", "service2"]
+    },
+    "dag-relay": {
+        "service0": ["service1", "service2", "service3"],
+        "service1": ["service0", "service4"],
+        "service2": ["service0", "service4"],
+        "service3": ["service0", "service4"],
+        "service4": ["service1", "service2", "service3", "service5", "service6"],
+        "service5": ["service4"],
+        "service6": ["service4"]
+    },
+    "dynamic-cache": {
+        "service0": ["service1"],
+        "service1": ["service0", "service2"],
+        "service2": ["service1"],
+    },
+    "dynamic-cycle": {
+        "service0": ["service1"],
+        "service1": ["service0", "service2", "service3", "service4"],
+        "service2": ["service1"],
+        "service3": ["service1"],
+        "service4": ["service1"]
+    },
+    "dynamic-once": {
+        "service0": ["service1"],
+        "service1": ["service0", "service2", "service3"],
+        "service2": ["service1", "service4"],
+        "service3": ["service1"],
+        "service4": ["service2"]
+    },
+    "dynamic-twice": {
+        "service0": ["service1", "service2", "service3"],
+        "service1": ["service0", "service4"],
+        "service2": ["service0"],
+        "service3": ["service0", "service5", "service6"],
+        "service4": ["service1"],
+        "service5": ["service3"],
+        "service6": ["service3"]
+    }
+}
+
 def get_request_ratio(benchmark, request):
     if benchmark == "synthetic":
         return get_request_ratio_synthetic(request)
@@ -178,14 +266,31 @@ def get_baseline_service_processing_time_synthetic(target, request, random_seed)
     random_numbers.sort()
     print(f"[config.py] Random numbers for execution time: {random_numbers}")
 
+def get_baseline_service_processing_time_synthetic(target, request, random_seed):
+    topology = "-".join(request.split("-")[:2])
+    num = len(service_reuse[topology])
+    random.seed(random_seed)
+    random_numbers = [random.gauss(700, 300) for i in range(num)]
+    random_numbers = [abs(r) for r in random_numbers]   # just in case
+    random_numbers.sort()
+    print(f"[config.py] Random numbers for execution time: {random_numbers}")
+    # use the random number to also decide if we want the target service is the bottleneck
+    is_bottleneck = random.choice([True, False])
+    print(f"[config.py] Is bottleneck: {is_bottleneck}")
+    picked_service = target_service
+    if not is_bottleneck:
+        # pick a random service that is not the target service
+        while picked_service == target_service:
+            picked_service = f"service{random.randint(0, num-1)}"
     processing_time = {}
+    picked_idx = int(picked_service.replace("service", ""))
+    processing_time[picked_service] = round(2 * random_numbers.pop(-1)/ service_reuse[topology][picked_idx], 2)
+
     for i in range(num):
-        if i in leaf_nodes[topology] and f"service{i}" == target:
-            processing_time[f"service{i}"] = round(2 * random_numbers.pop(-1)/ service_reuse[topology][i], 2)
-        elif f"service{i}" == target:
-            processing_time[f"service{i}"] = round(random_numbers.pop(-1)/service_reuse[topology][i], 2)
-        else:
-            processing_time[f"service{i}"] = round(random_numbers.pop(-1)/service_reuse[topology][i], 2)
+        service_name = f"service{i}"
+        if service_name == picked_service:
+            continue
+        processing_time[f"service{i}"] = round(random_numbers.pop(-1) / service_reuse[topology][i], 2)
     return processing_time
 
 def get_cpu_quota(benchmark, request):

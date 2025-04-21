@@ -50,7 +50,7 @@ spec:
                     - name: SLOWPOKE_IS_TARGET_SERVICE
                       value: "${SLOWPOKE_IS_TARGET_SERVICE_SERVICE1}"
                     - name: SLOWPOKE_NEIGHBORS
-                      value: "service0:service4"
+                      value: "${SLOWPOKE_NEIGHBORS_SERVICE1}"
                   ports:
                     - containerPort: 5000
                     - containerPort: 5550

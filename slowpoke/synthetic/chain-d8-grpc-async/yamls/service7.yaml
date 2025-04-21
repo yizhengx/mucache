@@ -30,7 +30,7 @@ spec:
             nodeName: worker8
             containers:
                 - name: app
-                  image: yizhengx/mucache:synthetic-pokerpp-0maxconn-grpc
+                  image: yizhengx/mucache-pokerpp-opt
                   imagePullPolicy: Always
                   env:
                     - name: APP_NAME
@@ -49,6 +49,8 @@ spec:
                       value: "service7"
                     - name: SLOWPOKE_IS_TARGET_SERVICE
                       value: "${SLOWPOKE_IS_TARGET_SERVICE_SERVICE7}"
+                    - name: SLOWPOKE_NEIGHBORS
+                      value: "${SLOWPOKE_NEIGHBORS_SERVICE7}"
                   ports:
                     - containerPort: 5000
                     - containerPort: 5550
